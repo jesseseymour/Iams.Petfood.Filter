@@ -1,0 +1,10 @@
+.product-list{
+  display: flex;
+  flex-flow: row wrap;
+  h1{
+    flex-basis: 100%;
+  }
+  .product{
+    padding: 20px;
+  }
+}
