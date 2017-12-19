@@ -1,32 +1,15 @@
 import { Component } from 'react'
 import Product from './Product'
+import ProductFilters from './ProductFilters'
 import fetch from 'isomorphic-fetch'
 
 class ProductList extends Component {
   constructor(props) {
     super(props)
+    this.toggleFilter = this.toggleFilter.bind(this)
     this.state = {
-      /*products: [
-        {
-          name: "Pedigree Dry Dog Food",
-          thumbnail: "https://www.pedigree.com/images/default-source/default-album/logo.png",
-          bvID: "6",
-          psID: "023100102801"
-        },
-        {
-          name: "Pedigree Wet Dog Food",
-          thumbnail: "https://www.pedigree.com/images/default-source/default-album/logo.png",
-          bvID: "6",
-          psID: "023100102801"
-        },
-        {
-          name: "Pedigree Treats",
-          thumbnail: "https://www.pedigree.com/images/default-source/default-album/logo.png",
-          bvID: "6",
-          psID: "023100102801"
-        }
-      ]*/
       products: [],
+      filters: [],
       loading: false
     }
   }
@@ -41,10 +24,20 @@ class ProductList extends Component {
             }))
   }
 
+  toggleFilter(event) {
+    alert('working')
+    // const filters = [
+    //   ...this.state.filters
+    // ]
+  }
+
   render() {
     const { products } = this.state
     return (
       <div className="product-list">
+        <div className="product-filters">
+          <ProductFilters />
+        </div>
         <h1>Products</h1>
         {(products.length) ?
             products.slice(0,10).map(
