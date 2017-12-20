@@ -2,10 +2,16 @@ import C from '../constants'
 import { combineReducers } from 'redux'
 
 
-export const toggleFilter = (state=[], action) => {
-  (action.type === C.TOGGLE_FILTER) ?
-    state : 
-    state
+export const allFilters = (state=[], action) => {
+  switch(action.type) {
+    case C.TOGGLE_FILTER :
+      return [
+        ...state,
+        action.payload
+      ]
+    default:
+      return state
+  }
 }
 
 export const errors = (state=[], action) => {
@@ -23,6 +29,6 @@ export const errors = (state=[], action) => {
 }
 
 export default combineReducers({
-  toggleFilter,
+  allFilters,
   errors
 })

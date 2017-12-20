@@ -4,13 +4,15 @@ import { render } from 'react-dom'
 // import routes from './routes'
 import storeFactory from './store'
 import sampleData from './initialState'
-import ProductList from './components/ui/ProductList'
+import ProductList from './components/containers/ProductFilters'
 import { Provider } from 'react-redux'
 import './stylesheets/style.scss'
 
-const initialState = (localStorage["redux-store"]) ?
-  JSON.parse(localStorage["redux-store"]) :
-  sampleData
+// const initialState = (localStorage["redux-store"]) ?
+//   JSON.parse(localStorage["redux-store"]) :
+//   sampleData
+
+const initialState = sampleData
 
 const saveState = () =>
   localStorage["redux-store"] = JSON.stringify(store.getState())
