@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import Product from './Product'
-import ProductFilters from './ProductFilters'
+import ProductFilters from '../containers/ProductFilters'
 import fetch from 'isomorphic-fetch'
 
 class ProductList extends Component {

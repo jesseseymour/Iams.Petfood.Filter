@@ -1,0 +1,9 @@
+{
+  "allFilters": [
+    {
+      "name": "dry",
+      "parent": "type"
+    }
+  ],
+  "errors": []
+}

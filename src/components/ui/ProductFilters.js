@@ -5,12 +5,18 @@ import fetch from 'isomorphic-fetch'
 class ProductFilter extends Component {
   constructor(props) {
     super(props)
-    
   }
   render() {
-    const { toggleFilter } = this.props
     return (
-      <li className="product-filter-item" id={ this.props.name }>
+      <li 
+        className="product-filter-item" 
+        id={ this.props.name.toLowerCase() }
+        data-active={ (this.props.filters.map(filter => 
+          filter.name === this.props.name.toLowerCase() //set data-active=true is filter name matches an active filter
+        )) }
+        data-parent={ (this.props.parent) ? 
+          this.props.parent.toLowerCase() : null } //set data-parent to parent list item
+        >
         { this.props.name }
         { this.props.children }
       </li>
@@ -34,13 +40,17 @@ class ProductFilters extends Component {
          }))
   }
 
-  list(filters) {
+  onToggleFilter(){
+
+  }
+
+  list(filters,parent=null) {
     let level = 1
-    const children = (items) => {
+    const children = (items,parent) => {
       if (items) {
         level++
         return (<ul className={"submenu level-" + level}>
-                 { this.list(items) }
+                 { this.list(items,parent) }
                </ul>)
       }
     }
@@ -48,8 +58,11 @@ class ProductFilters extends Component {
     return filters.map(( node, i ) => {
       return <ProductFilter key={i}
                             name={node.Title}
-                            numChildren={node.Children.length}>
-                            { children(node.Children) }
+                            numChildren={node.Children.length}
+                            filters={this.props.filters}
+                            parent={parent}
+                            onClick={ onToggleFilter("test name", "test parent") }>
+                            { children(node.Children,node.Title) }
                             </ProductFilter>
     })
   }
