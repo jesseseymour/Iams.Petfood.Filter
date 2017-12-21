@@ -2,27 +2,25 @@ import { Component } from 'react'
 import fetch from 'isomorphic-fetch'
 
 
-class ProductFilter extends Component {
-  constructor(props) {
-    super(props)
-  }
-  render() {
-    return (
-      <li 
-        className="product-filter-item" 
-        id={ this.props.name.toLowerCase() }
-        data-active={ (this.props.filters.map(filter => 
-          filter.name === this.props.name.toLowerCase() //set data-active=true is filter name matches an active filter
-        )) }
-        data-parent={ (this.props.parent) ? 
-          this.props.parent.toLowerCase() : null } //set data-parent to parent list item
-        >
-        { this.props.name }
-        { this.props.children }
-      </li>
-    )
-  }
-}
+const ProductFilter = ({ id, name, filters, parent, children, onToggleFilter }) =>
+  <li className="product-filter-item" 
+    key={ id }
+    id={ name.toLowerCase() }
+    data-active={ (filters.map(filter => 
+      filter.name === name.toLowerCase() //set data-active=true is filter name matches an active filter
+    )) }
+    data-parent={ (parent) ? 
+      parent.toLowerCase() : null } //set data-parent to parent list item
+    >
+    <span onClick={ 
+      (parent) ?
+        () => onToggleFilter(name.toLowerCase(), id) :
+        null 
+    }>{ name }</span>
+    { children }
+  </li>
+
+
 
 class ProductFilters extends Component {
   constructor(props) {
@@ -32,7 +30,7 @@ class ProductFilters extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount() { //fetch filter data from json
     fetch('./data/filters.json')
          .then(response => response.json())
          .then(filters => this.setState({
@@ -40,15 +38,10 @@ class ProductFilters extends Component {
          }))
   }
 
-  onToggleFilter(){
-
-  }
-
-  list(filters,parent=null) {
-    let level = 1
-    const children = (items,parent) => {
+  list(filters,parent=null,level=0) {
+    
+    const children = (items,parent,level) => {
       if (items) {
-        level++
         return (<ul className={"submenu level-" + level}>
                  { this.list(items,parent) }
                </ul>)
@@ -61,8 +54,9 @@ class ProductFilters extends Component {
                             numChildren={node.Children.length}
                             filters={this.props.filters}
                             parent={parent}
-                            onClick={ onToggleFilter("test name", "test parent") }>
-                            { children(node.Children,node.Title) }
+                            id={node.Id}
+                            onToggleFilter={this.props.onToggleFilter}>
+                            { children(node.Children,node.Title,level++) }
                             </ProductFilter>
     })
   }
