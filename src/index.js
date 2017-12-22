@@ -7,13 +7,15 @@ import sampleData from './initialState'
 import ProductFilters from './components/containers/ProductFilters'
 import ProductList from './components/ui/ProductList'
 import { Provider } from 'react-redux'
+import { AppContainer } from 'react-hot-loader'
 import './stylesheets/style.scss'
 
-// const initialState = (localStorage["redux-store"]) ?
-//   JSON.parse(localStorage["redux-store"]) :
-//   sampleData
+const initialState = (localStorage["redux-store"]) ?
+  JSON.parse(localStorage["redux-store"]) :
+  // sampleData :
+  sampleData
 
-const initialState = sampleData
+//const initialState = sampleData
 
 const saveState = () =>
   localStorage["redux-store"] = JSON.stringify(store.getState())
@@ -32,3 +34,8 @@ render(
     <ProductList />
   </div>, 
   document.getElementById('react-container'))
+
+
+if (module.hot) {
+  //module.hot.accept('./', () => { })
+}

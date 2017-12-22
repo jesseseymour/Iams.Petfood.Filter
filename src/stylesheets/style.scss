@@ -16,10 +16,11 @@ ul,li{
 .filter-list{
   display: flex;
   flex-flow: row nowrap;
-  > li{
+  justify-content: flex-end;
+  > div{
     margin: 0 20px;
     font-weight: bold;
-    li{
+    div{
       font-weight: normal;
       cursor: pointer;
     }

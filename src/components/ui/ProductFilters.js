@@ -1,24 +1,24 @@
 import { Component } from 'react'
 import fetch from 'isomorphic-fetch'
+import storeFactory from '../../store'
 
 
-const ProductFilter = ({ id, name, filters, parent, children, onToggleFilter }) =>
-  <li className="product-filter-item" 
+const ProductFilter = ({ id, name, active, parent, children, onToggleFilter }) =>
+  <div className="product-filter-item" 
     key={ id }
-    id={ name.toLowerCase() }
-    data-active={ (filters.map(filter => 
-      filter.name === name.toLowerCase() //set data-active=true is filter name matches an active filter
-    )) }
+    id={ id }
+    data-active={active}
     data-parent={ (parent) ? 
-      parent.toLowerCase() : null } //set data-parent to parent list item
+      parent : null } //set data-parent to parent list item
     >
     <span onClick={ 
       (parent) ?
-        () => onToggleFilter(name.toLowerCase(), id) :
+        (e) => onToggleFilter(name.toLowerCase(), id, e.target.parentNode) :
         null 
     }>{ name }</span>
     { children }
-  </li>
+    
+  </div>
 
 
 
@@ -38,13 +38,18 @@ class ProductFilters extends Component {
          }))
   }
 
-  list(filters,parent=null,level=0) {
-    
-    const children = (items,parent,level) => {
+  list_old(filters,parent=null,level=0) {
+    //console.log('parent: ' + parent + ' | level: ' + level)
+    console.log(filters)
+    const children = (items,parent) => {
+
       if (items) {
-        return (<ul className={"submenu level-" + level}>
-                 { this.list(items,parent) }
-               </ul>)
+        return (
+          (items.length)?
+            <div className={"submenu level-" + level}>
+                 { this.list(items,parent, level++) }
+               </div> :
+            null)
       }
     }
 
@@ -52,19 +57,34 @@ class ProductFilters extends Component {
       return <ProductFilter key={i}
                             name={node.Title}
                             numChildren={node.Children.length}
-                            filters={this.props.filters}
-                            parent={parent}
+                            active={this.props.filters.some(filter => filter.key === node.Id)}
+                            parent="test"
                             id={node.Id}
                             onToggleFilter={this.props.onToggleFilter}>
-                            { children(node.Children,node.Title,level++) }
+                            { children(node.Children,node.Title) }
                             </ProductFilter>
     })
+  }
+
+  list(array,depth=0,parent=null) {
+    return array.map((node, i) => {
+      return <ProductFilter key={i}
+                            name={node.Title}
+                            numChildren={node.Children.length}
+                            active={this.props.filters.some(filter => filter.key === node.Id)}
+                            parent={parent}
+                            id={node.Id}
+                            depth={depth}
+                            onToggleFilter={this.props.onToggleFilter}>
+                            { this.list(node.Children,depth+1,node.Id) }
+                            </ProductFilter>
+    }) 
   }
 
   render() {
     const { filters } = this.state
     return (
-      <ul className="filter-list" >{this.list(filters)}</ul>
+      <div className="filter-list" >{this.list(filters)}</div>
     )
   }
 
