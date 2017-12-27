@@ -38,34 +38,6 @@ class ProductFilters extends Component {
          }))
   }
 
-  list_old(filters,parent=null,level=0) {
-    //console.log('parent: ' + parent + ' | level: ' + level)
-    console.log(filters)
-    const children = (items,parent) => {
-
-      if (items) {
-        return (
-          (items.length)?
-            <div className={"submenu level-" + level}>
-                 { this.list(items,parent, level++) }
-               </div> :
-            null)
-      }
-    }
-
-    return filters.map(( node, i ) => {
-      return <ProductFilter key={i}
-                            name={node.Title}
-                            numChildren={node.Children.length}
-                            active={this.props.filters.some(filter => filter.key === node.Id)}
-                            parent="test"
-                            id={node.Id}
-                            onToggleFilter={this.props.onToggleFilter}>
-                            { children(node.Children,node.Title) }
-                            </ProductFilter>
-    })
-  }
-
   list(array,depth=0,parent=null) {
     return array.map((node, i) => {
       return <ProductFilter key={i}
@@ -81,10 +53,29 @@ class ProductFilters extends Component {
     }) 
   }
 
+  activeFilters(array) { //list active filters below filter nav and bind onToggleFilter click event
+    return (array.length) ?
+      array.map((node, i) => {
+        return <span className="active-filter" 
+                     onClick={(e) =>
+                      this.props.onToggleFilter(
+                        node.name.toLowerCase(), 
+                        node.key, 
+                        e.target.parentNode)}
+                     key={"active-" + node.key}>
+                     {node.name}
+               </span>
+      }) :
+      <span className="active-filter">No active filters</span>
+  }
+
   render() {
     const { filters } = this.state
     return (
-      <div className="filter-list" >{this.list(filters)}</div>
+      <div className="filter-list" >
+        {this.list(filters)}
+        <div className="active-filters">{this.activeFilters(this.props.filters)}</div>
+      </div>
     )
   }
 
