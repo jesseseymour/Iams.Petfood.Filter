@@ -3,13 +3,13 @@ import { Component } from 'react'
 
 import sampleData from './initialState'
 import ProductFilters from './components/containers/ProductFilters'
-import ProductList from './components/ui/ProductList'
+import ProductList from './components/containers/ProductList'
 import './stylesheets/style.scss'
 
 class App extends Component {
   render() {
     return (
-      <div className="App2">
+      <div className="App">
         <ProductFilters />
         <ProductList />
       </div>

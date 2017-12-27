@@ -17,7 +17,8 @@ module.exports = {
         hotOnly: true
     },
     plugins: [
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NamedModulesPlugin()
     ],
     module: {
         loaders: [
