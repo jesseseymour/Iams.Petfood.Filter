@@ -1,5 +1,4 @@
-//import ProductFilters from '../ui/ProductFilters'
-import ToggleFilter from '../ui/ToggleFilter'
+import ProductFilters from '../ui/ProductFilters'
 import { connect } from 'react-redux'
 import { toggleFilter } from '../../actions'
 
@@ -11,12 +10,13 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onToggleFilter(name,parent) {
+    onToggleFilter(name,id,e) {
+      
       dispatch(
-        toggleFilter(name,parent)
+        toggleFilter(name,id)
       )
     }
   }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(ToggleFilter)
+export default connect(mapStateToProps,mapDispatchToProps)(ProductFilters)

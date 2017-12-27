@@ -1,15 +1,12 @@
 import { Component } from 'react'
 import Product from './Product'
-import ProductFilters from '../containers/ProductFilters'
 import fetch from 'isomorphic-fetch'
 
 class ProductList extends Component {
   constructor(props) {
     super(props)
-    this.toggleFilter = this.toggleFilter.bind(this)
     this.state = {
       products: [],
-      filters: [],
       loading: false
     }
   }
@@ -24,20 +21,10 @@ class ProductList extends Component {
             }))
   }
 
-  toggleFilter(event) {
-    alert('working')
-    // const filters = [
-    //   ...this.state.filters
-    // ]
-  }
-
   render() {
     const { products } = this.state
     return (
       <div className="product-list">
-        <div className="product-filters">
-          <ProductFilters />
-        </div>
         <h1>Products</h1>
         {(products.length) ?
             products.slice(0,10).map(

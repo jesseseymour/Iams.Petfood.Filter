@@ -2,10 +2,19 @@ import C from '../constants'
 import { combineReducers } from 'redux'
 
 
-export const toggleFilter = (state=[], action) => {
-  (action.type === C.TOGGLE_FILTER) ?
-    state : 
-    state
+export const allFilters = (state=[], action) => {
+  switch(action.type) {
+    case C.TOGGLE_FILTER :
+      const hasFilter = state.some(filter => filter.key === action.payload.key) //check if filter exists in state
+      return (hasFilter) ?
+        state.filter(filter => filter.key !== action.payload.key) : //remove filter from state if exists
+        [
+          ...state,
+          action.payload //add filter to state if does not exist
+        ] 
+    default:
+      return state
+  }
 }
 
 export const errors = (state=[], action) => {
@@ -23,6 +32,6 @@ export const errors = (state=[], action) => {
 }
 
 export default combineReducers({
-  toggleFilter,
+  allFilters,
   errors
 })
