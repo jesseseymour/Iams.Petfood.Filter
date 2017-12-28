@@ -1,3 +1,6 @@
+*{
+  box-sizing: border-box;
+}
 .product-list{
   display: flex;
   flex-flow: row wrap;
@@ -6,6 +9,7 @@
   }
   .product{
     padding: 20px;
+    flex-basis: 25%;
   }
 }
 ul,li{
@@ -43,5 +47,8 @@ ul,li{
   justify-content: space-around;
   >*{
     cursor: pointer;
+  }
+  .selected{
+    font-weight: bold;
   }
 }

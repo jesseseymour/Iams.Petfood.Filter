@@ -8,7 +8,10 @@ class ProductList extends Component {
     super(props)
     this.state = {
       products: [],
-      loading: false
+      filteredProducts: [],
+      loading: false,
+      offset: 0,
+      currentPage: 0
     }
   }
 
@@ -16,14 +19,50 @@ class ProductList extends Component {
     this.setState({loading:true})
     fetch('./data/MOCK_DATA.json')
             .then(response => response.json())
+            .then(products => products.slice(0,50))
             .then(products => this.setState({
                 products,
-                loading: false
+                loading: false,
+                filteredProducts: this.updateProductList(products)
             }))
   }
 
-  shouldProductRender(product) {
-    const activeFilters = this.props.filters
+  shouldComponentUpdate(nextProps, nextState) {
+    return (nextState !== this.state || nextProps !== this.props) 
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const filteredProducts = this.updateProductList(null,nextProps.filters)
+    this.setState({
+      filteredProducts,
+      offset: 0,
+      currentPage: 0
+    })
+  }
+
+  updateProductList(products=null,nextFilters=null) {
+    products = (products) ? products : this.state.products
+    let filteredProducts = []
+    products.map(
+      (product) => {
+        (this.shouldProductRender(product,nextFilters)) ? filteredProducts.push(product) : null
+      }
+    )
+
+    return filteredProducts
+  }
+
+  getSlicedProductList(products,offset,all=false) {
+    const perPage = this.props.perPage
+    const test = products.slice(offset,offset + perPage)
+    return (all) ?
+      products : 
+      products.slice(offset,offset + perPage)
+
+  }
+
+  shouldProductRender(product,nextFilters=null) {
+    const activeFilters = (nextFilters) ? nextFilters : this.props.filters
     const productFilters = { "type": product.type.split(','), //create object with filters for product being tested
                              "age": product.age.split(','),
                              "size": product.size.split(','),
@@ -34,10 +73,14 @@ class ProductList extends Component {
     if (activeFilters.length) { //if there are active filters proceed to look for match with tested product
       Object.entries(productFilters).forEach(([key,value]) => //loop through filters for current product
         activeFilters.map((f) => //map through active filters
-          value.map((v) => //now map through current product filter array and look for match with active filter
-            (v === f.name) ?
-              match = true :
+          value.map((v) => {//now map through current product filter array and look for match with active filter
+            //(v === f.name) ? match = product : null
+            if (v === f.name) {
+              match = true
+            } else {
               null
+            }
+          }
           )
         )
       ) 
@@ -48,30 +91,44 @@ class ProductList extends Component {
     }
   }
 
+  handlePageClick = (data) => {
+    let selected = data.selected
+    let offset = Math.ceil(selected * this.props.perPage)
+    //const filteredProducts = this.updateProductList(offset=offset)
+    this.setState({
+      offset: offset,
+      currentPage: Math.floor(offset / this.props.perPage)
+    })
+  }
+
   render() {
-    const { products } = this.state
+    const { filteredProducts } = this.state
+    const slicedProducts = this.getSlicedProductList(filteredProducts,this.state.offset)
+    //const forceSelected = (this.state.offset === 0) ? 0 : null
+
     return (
       <div className="product-list">
         <h1>Products</h1>
-        
+        <ReactPaginate pageCount={Math.ceil(filteredProducts.length / this.props.perPage)}
+                       pageRangeDisplayed={5}
+                       marginPagesDisplayed={1}
+                       containerClassName={"pagination"}
+                       onPageChange={this.handlePageClick}
+                       forcePage={this.state.currentPage}
+                            />
         {
-          (products.length) ?
-
-            products.slice(0,10).map(
+          (slicedProducts.length) ?
+            slicedProducts.map(
               (product, i) => 
-                (this.shouldProductRender(product)) ?
-                  
-                  <Product key={i}
-                           name={product.name}
-                           thumbnail={product.thumbnail}
-                           link={product.link}
-                           bvID={product.bvID}
-                           psID={product.psID}
-                           type={product.type}
-                           age={product.age}
-                           flavors={product.flavors} />
-                :
-                  null
+                <Product key={i}
+                         name={product.name}
+                         thumbnail={product.thumbnail}
+                         link={product.link}
+                         bvID={product.bvID}
+                         psID={product.psID}
+                         type={product.type}
+                         age={product.age}
+                         flavors={product.flavors} />
 
             )
 
@@ -80,14 +137,14 @@ class ProductList extends Component {
             <span>Currently 0 Products</span>
           
         }
-        <ReactPaginate pageCount={10}
-                       pageRangeDisplayed={10}
-                       marginPagesDisplayed={10}
-                       containerClassName={"pagination"}
-                            />
+        
       </div>
     )
   }
+}
+
+ProductList.defaultProps = {
+  perPage: 8
 }
 
 export default ProductList
