@@ -1,6 +1,6 @@
 import ProductFilters from '../ui/ProductFilters'
 import { connect } from 'react-redux'
-import { toggleFilter } from '../../actions'
+import { toggleFilter, setFilters, clearFilters } from '../../actions'
 
 const mapStateToProps = (state) => {
   return {
@@ -11,9 +11,18 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
   return {
     onToggleFilter(name,id,e) {
-      
       dispatch(
         toggleFilter(name,id)
+      )
+    },
+    setFilters(array) {
+      dispatch(
+        setFilters(array)
+      )
+    },
+    clearFilters() {
+      dispatch(
+        clearFilters()
       )
     }
   }

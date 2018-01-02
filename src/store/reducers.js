@@ -12,6 +12,10 @@ export const allFilters = (state=[], action) => {
           ...state,
           action.payload //add filter to state if does not exist
         ] 
+    case C.SET_FILTERS :
+      return action.payload.array //set filters if any found in url path
+    case C.CLEAR_FILTERS :
+      return []
     default:
       return state
   }
