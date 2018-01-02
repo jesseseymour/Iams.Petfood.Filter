@@ -34,9 +34,10 @@ ul,li{
     text-align: right;
     display: flex;
     justify-content: flex-end;
-    > span{
+    span{
       padding: 0 10px;
       cursor: pointer;
+
     }
   }
 }

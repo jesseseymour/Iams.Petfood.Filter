@@ -3,13 +3,11 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import storeFactory from './store'
 import { Provider } from 'react-redux'
+import sampleData from './initialState'
 
 const initialState = (localStorage["redux-store"]) ?
   JSON.parse(localStorage["redux-store"]) :
-  // sampleData :
   sampleData
-
-//const initialState = sampleData
 
 const saveState = () =>
   localStorage["redux-store"] = JSON.stringify(store.getState())
@@ -18,10 +16,9 @@ const store = storeFactory(initialState)
 store.subscribe(saveState)
 
 window.React = React
-window.store = store
 
 let render = () => {
-  const App = require("./App").default
+  const App = require("./routes").default
 
   ReactDOM.render(
     <Provider store={store}>
@@ -29,15 +26,6 @@ let render = () => {
     </Provider>, 
     document.getElementById('react-container'))
 }
-
-// render(
-//   <div>
-//     <Provider store={store}>
-//       <ProductFilters />
-//     </Provider>
-//     <ProductList />
-//   </div>, 
-//   document.getElementById('react-container'))
 
 
 if (module.hot) {
@@ -51,7 +39,7 @@ if (module.hot) {
     }
   }
 
-  module.hot.accept("./App.js", () => {
+  module.hot.accept("./routes.js", () => {
     setTimeout(render)
   })
 }
