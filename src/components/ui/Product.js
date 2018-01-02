@@ -1,6 +1,3 @@
-import { Component } from 'react'
-
-
 const Product = ({ name, thumbnail, bvID, link, psID }) =>
   <div className="product">
     <a href={link}>

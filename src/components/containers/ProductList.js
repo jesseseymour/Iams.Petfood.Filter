@@ -1,6 +1,5 @@
 import ProductList from '../ui/ProductList'
 import { connect } from 'react-redux'
-import { toggleFilter } from '../../actions'
 
 const mapStateToProps = (state) => {
   return {
@@ -8,14 +7,5 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    test(name,id,e) {
-      dispatch(
-        toggleFilter(name,id)
-      )
-    }
-  }
-}
 
-export default connect(mapStateToProps,mapDispatchToProps)(ProductList)
+export default connect(mapStateToProps)(ProductList)

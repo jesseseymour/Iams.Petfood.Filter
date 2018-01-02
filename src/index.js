@@ -17,6 +17,8 @@ store.subscribe(saveState)
 
 window.React = React
 
+if(process.env.NODE_ENV !== "production") window.store = store //make store global for dev
+
 let render = () => {
   const App = require("./App").default
 

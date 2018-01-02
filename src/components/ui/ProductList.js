@@ -74,12 +74,7 @@ class ProductList extends Component {
       Object.entries(productFilters).forEach(([key,value]) => //loop through filters for current product
         activeFilters.map((f) => //map through active filters
           value.map((v) => {//now map through current product filter array and look for match with active filter
-            //(v === f.name) ? match = product : null
-            if (v === f.name) {
-              match = true
-            } else {
-              null
-            }
+            (v === f.name) ? match = true : null
           }
           )
         )
@@ -91,7 +86,7 @@ class ProductList extends Component {
     }
   }
 
-  handlePageClick = (data) => {
+  handlePageClick = (data) => { //pagination link click
     let selected = data.selected
     let offset = Math.ceil(selected * this.props.perPage)
     
@@ -141,7 +136,7 @@ class ProductList extends Component {
 }
 
 ProductList.defaultProps = {
-  perPage: 8
+  perPage: 8 //number of products to show per page
 }
 
 export default ProductList

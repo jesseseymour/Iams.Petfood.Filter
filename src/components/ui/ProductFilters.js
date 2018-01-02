@@ -1,9 +1,7 @@
 import { Component } from 'react'
 import fetch from 'isomorphic-fetch'
-import storeFactory from '../../store'
 
-
-const ProductFilter = ({ id, name, active, parent, children, onToggleFilter }) =>
+const ProductFilter = ({ id, name, active, parent, children, onToggleFilter }) => //individual product filter component
   <div className="product-filter-item" 
     key={ id }
     id={ id }
@@ -17,7 +15,6 @@ const ProductFilter = ({ id, name, active, parent, children, onToggleFilter }) =
         null 
     }>{ name }</span>
     { children }
-    
   </div>
 
 
@@ -30,7 +27,7 @@ class ProductFilters extends Component {
     }
   }
 
-  componentDidMount() { //fetch filter data from json
+  componentDidMount() { //fetch filter data from json. this should be changed to fetch from the webservice when moved to client app
     fetch('./data/filters.json')
          .then(response => response.json())
          .then(filters => this.setState({
@@ -62,11 +59,11 @@ class ProductFilters extends Component {
         if(test.toLowerCase() === node.Title.toLowerCase().replace(/[^0-9a-zA-Z]+/g,"-")) { //replace special characters with hyphen
           results.push({name: node.Title.toLowerCase(), key: node.Id})
         }
-        searchFilterArray(node.Children, test)
+        searchFilterArray(node.Children, test) //run function again if children found in object
       })
     }
 
-    test.map((filter) => {
+    test.map((filter) => { //map array of filters found in url
       searchFilterArray(array,filter)
     })
     
@@ -96,21 +93,21 @@ class ProductFilters extends Component {
 
   activeFilters(array) { //list active filters below filter nav and bind onToggleFilter click event
     return (array.length) ?
-    <div>
-      <span className="clear-filters"
-            onClick={this.props.clearFilters}>Clear All Filters</span>
-      {array.map((node, i) => {
-              return <span className="active-filter" 
-                           onClick={(e) =>
-                            this.props.onToggleFilter(
-                              node.name.toLowerCase(), 
-                              node.key, 
-                              e.target.parentNode)}
-                           key={"active-" + node.key}>
-                           {node.name}
-                     </span>
-            })}</div> :
-      <span className="active-filter">No active filters</span>
+      <div>
+        <span className="clear-filters"
+              onClick={this.props.clearFilters}>Clear All Filters</span>
+        {array.map((node, i) => {
+          return <span className="active-filter" 
+                       onClick={(e) =>
+                        this.props.onToggleFilter(
+                          node.name.toLowerCase(), 
+                          node.key, 
+                          e.target.parentNode)}
+                       key={"active-" + node.key}>
+                       {node.name}
+                 </span>
+        })}</div> :
+        <span className="active-filter">No active filters</span>
   }
 
   render() {
