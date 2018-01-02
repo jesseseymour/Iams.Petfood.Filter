@@ -7,18 +7,24 @@ module.exports = {
         filename: "bundle.min.js",
         publicPath: "/assets/"
     },
-    devtool: 'source-map',
-    debug: true,
+    //devtool: 'cheap-module-source-map',
+    //debug: true,
     devServer: {
         inline: true,
         contentBase: './dist',
+        historyApiFallback: true,
         port: 3000,
         hot: true,
         hotOnly: true
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NamedModulesPlugin()
+        new webpack.NamedModulesPlugin(),
+        new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: JSON.stringify("production") //comment out if running dev server
+            }
+        })
     ],
     module: {
         loaders: [
