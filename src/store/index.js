@@ -26,8 +26,9 @@ const consoleMessages = store => next => action => {
 
 }
 
+
 export default (initialState={}) => {
-	return applyMiddleware(thunk,consoleMessages)(createStore)(appReducer, initialState)
+	return applyMiddleware(thunk/*,consoleMessages*/)(createStore)(appReducer, initialState)
 }
 
 
