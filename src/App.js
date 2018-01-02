@@ -1,7 +1,6 @@
 import C from './constants'
 import { Component } from 'react'
 
-import sampleData from './initialState'
 import ProductFilters from './components/containers/ProductFilters'
 import ProductList from './components/containers/ProductList'
 import './stylesheets/style.scss'

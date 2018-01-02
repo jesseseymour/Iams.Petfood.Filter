@@ -18,7 +18,7 @@ store.subscribe(saveState)
 window.React = React
 
 let render = () => {
-  const App = require("./routes").default
+  const App = require("./App").default
 
   ReactDOM.render(
     <Provider store={store}>
@@ -39,7 +39,7 @@ if (module.hot) {
     }
   }
 
-  module.hot.accept("./routes.js", () => {
+  module.hot.accept("./App.js", () => {
     setTimeout(render)
   })
 }
