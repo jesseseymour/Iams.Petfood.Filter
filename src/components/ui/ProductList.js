@@ -94,7 +94,7 @@ class ProductList extends Component {
   handlePageClick = (data) => {
     let selected = data.selected
     let offset = Math.ceil(selected * this.props.perPage)
-    //const filteredProducts = this.updateProductList(offset=offset)
+    
     this.setState({
       offset: offset,
       currentPage: Math.floor(offset / this.props.perPage)
@@ -104,7 +104,6 @@ class ProductList extends Component {
   render() {
     const { filteredProducts } = this.state
     const slicedProducts = this.getSlicedProductList(filteredProducts,this.state.offset)
-    //const forceSelected = (this.state.offset === 0) ? 0 : null
 
     return (
       <div className="product-list">
@@ -131,8 +130,6 @@ class ProductList extends Component {
                          flavors={product.flavors} />
 
             )
-
-            
           :
             <span>Currently 0 Products</span>
           
