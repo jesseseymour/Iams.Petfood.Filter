@@ -5,9 +5,9 @@ import { combineReducers } from 'redux'
 export const activeFilters = (state=[], action) => {
   switch(action.type) {
     case C.TOGGLE_FILTER :
-      const hasFilter = state.some(filter => filter.key === action.payload.key) //check if filter exists in state
+      const hasFilter = state.some(filter => filter.id === action.payload.id) //check if filter exists in state
       return (hasFilter) ?
-        state.filter(filter => filter.key !== action.payload.key) : //remove filter from state if exists
+        state.filter(filter => filter.id !== action.payload.id) : //remove filter from state if exists
         [
           ...state,
           action.payload //add filter to state if does not exist

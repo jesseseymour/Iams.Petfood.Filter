@@ -57,7 +57,7 @@ class ProductFilters extends Component {
     function searchFilterArray(array, test) {    
       array.map((node,i) => {
         if(test.toLowerCase() === node.Title.toLowerCase().replace(/[^0-9a-zA-Z]+/g,"-")) { //replace special characters with hyphen
-          results.push({name: node.Title.toLowerCase(), key: node.Id})
+          results.push({name: node.Title.toLowerCase(), id: node.Id})
         }
         searchFilterArray(node.Children, test) //run function again if children found in object
       })
@@ -77,7 +77,7 @@ class ProductFilters extends Component {
       return <ProductFilter key={i}
                       name={node.Title}
                       numChildren={node.Children.length}
-                      active={this.props.activeFilters.some(filter => filter.key === node.Id)}
+                      active={this.props.activeFilters.some(filter => filter.id === node.Id)}
                       parent={parent}
                       id={node.Id}
                       depth={depth}
@@ -101,9 +101,9 @@ class ProductFilters extends Component {
                        onClick={(e) =>
                         this.props.onToggleFilter(
                           node.name.toLowerCase(), 
-                          node.key, 
+                          node.id, 
                           e.target.parentNode)}
-                       key={"active-" + node.key}>
+                       key={"active-" + node.id}>
                        {node.name} 
                  </span>
         })}</div> :
