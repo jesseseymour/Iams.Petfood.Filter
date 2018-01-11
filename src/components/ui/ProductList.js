@@ -7,8 +7,8 @@ class ProductList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      products: [],
-      filteredProducts: [],
+      products: [], //all products
+      filteredProducts: [], //filtered products
       loading: false,
       offset: 0,
       currentPage: 0
@@ -45,6 +45,7 @@ class ProductList extends Component {
     let filteredProducts = []
     products.map(
       (product) => {
+        //if product matches filter, add it to the new array
         (this.shouldProductRender(product,nextFilters)) ? filteredProducts.push(product) : null
       }
     )
@@ -52,7 +53,7 @@ class ProductList extends Component {
     return filteredProducts
   }
 
-  getSlicedProductList(products,offset,all=false) {
+  getSlicedProductList(products,offset,all=false) { //get selection of items based on pagination
     const perPage = this.props.perPage
     const test = products.slice(offset,offset + perPage)
     return (all) ?
@@ -108,8 +109,7 @@ class ProductList extends Component {
                        marginPagesDisplayed={1}
                        containerClassName={"pagination"}
                        onPageChange={this.handlePageClick}
-                       forcePage={this.state.currentPage}
-                            />
+                       forcePage={this.state.currentPage} />
         {
           (slicedProducts.length) ?
             slicedProducts.map(

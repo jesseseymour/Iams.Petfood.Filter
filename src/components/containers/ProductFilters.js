@@ -10,7 +10,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => { //attach dispatch actions to ProductFilters ui component
   return {
-    onToggleFilter(name,id,e) {
+    toggleFilter(name,id,e) {
       dispatch(
         toggleFilter(name,id)
       )
