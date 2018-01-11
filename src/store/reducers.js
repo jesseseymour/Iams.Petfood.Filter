@@ -2,7 +2,7 @@ import C from '../constants'
 import { combineReducers } from 'redux'
 
 
-export const allFilters = (state=[], action) => {
+export const activeFilters = (state=[], action) => {
   switch(action.type) {
     case C.TOGGLE_FILTER :
       const hasFilter = state.some(filter => filter.key === action.payload.key) //check if filter exists in state
@@ -36,6 +36,6 @@ export const errors = (state=[], action) => {
 }
 
 export default combineReducers({
-  allFilters,
+  activeFilters,
   errors
 })

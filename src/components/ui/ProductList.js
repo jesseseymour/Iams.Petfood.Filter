@@ -32,7 +32,7 @@ class ProductList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const filteredProducts = this.updateProductList(null,nextProps.filters)
+    const filteredProducts = this.updateProductList(null,nextProps.activeFilters)
     this.setState({
       filteredProducts,
       offset: 0,
@@ -62,7 +62,7 @@ class ProductList extends Component {
   }
 
   shouldProductRender(product,nextFilters=null) {
-    const activeFilters = (nextFilters) ? nextFilters : this.props.filters
+    const activeFilters = (nextFilters) ? nextFilters : this.props.activeFilters
     const productFilters = { "type": product.type.split(','), //create object with filters for product being tested
                              "age": product.age.split(','),
                              "size": product.size.split(','),

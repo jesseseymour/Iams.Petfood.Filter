@@ -23,15 +23,15 @@ class ProductFilters extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      filters: []
+      availableFilters: []
     }
   }
 
   componentDidMount() { //fetch filter data from json. this should be changed to fetch from the webservice when moved to client app
     fetch('./data/filters.json')
          .then(response => response.json())
-         .then(filters => this.setState({
-            filters
+         .then(availableFilters => this.setState({
+            availableFilters
          }))
          .then(() => this.checkURLForFilters())
   }
@@ -53,7 +53,7 @@ class ProductFilters extends Component {
   }
 
 
-  setFilter({test,array=this.state.filters,results=[]} = {}) { //set filters on page load if any found in the url path
+  setFilter({test,array=this.state.availableFilters,results=[]} = {}) { //set filters on page load if any found in the url path
     function searchFilterArray(array, test) {    
       array.map((node,i) => {
         if(test.toLowerCase() === node.Title.toLowerCase().replace(/[^0-9a-zA-Z]+/g,"-")) { //replace special characters with hyphen
@@ -72,12 +72,12 @@ class ProductFilters extends Component {
 
 
 
-  list({array=this.state.filters, depth=0, parent=null, render=true} = {}) { 
+  list({array=this.state.availableFilters, depth=0, parent=null, render=true} = {}) { 
     return (array.map((node, i) => {
       return <ProductFilter key={i}
                       name={node.Title}
                       numChildren={node.Children.length}
-                      active={this.props.filters.some(filter => filter.key === node.Id)}
+                      active={this.props.activeFilters.some(filter => filter.key === node.Id)}
                       parent={parent}
                       id={node.Id}
                       depth={depth}
@@ -104,18 +104,17 @@ class ProductFilters extends Component {
                           node.key, 
                           e.target.parentNode)}
                        key={"active-" + node.key}>
-                       {node.name}
+                       {node.name} 
                  </span>
         })}</div> :
         <span className="active-filter">No active filters</span>
   }
 
   render() {
-    const { filters } = this.state
     return (
       <div className="filter-list" >
         {this.list()}
-        <div className="active-filters">{this.activeFilters(this.props.filters)}</div>
+        <div className="active-filters">{this.activeFilters(this.props.activeFilters)}</div>
       </div>
     )
   }

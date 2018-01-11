@@ -4,7 +4,7 @@ import { toggleFilter, setFilters, clearFilters } from '../../actions'
 
 const mapStateToProps = (state) => {
   return {
-    filters: state.allFilters
+    activeFilters: state.activeFilters
   }
 }
 
