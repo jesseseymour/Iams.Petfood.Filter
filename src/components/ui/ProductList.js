@@ -7,8 +7,8 @@ class ProductList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      products: [],
-      filteredProducts: [],
+      products: [], //all products
+      filteredProducts: [], //filtered products
       loading: false,
       offset: 0,
       currentPage: 0
@@ -32,7 +32,7 @@ class ProductList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const filteredProducts = this.updateProductList(null,nextProps.filters)
+    const filteredProducts = this.updateProductList(null,nextProps.activeFilters)
     this.setState({
       filteredProducts,
       offset: 0,
@@ -45,6 +45,7 @@ class ProductList extends Component {
     let filteredProducts = []
     products.map(
       (product) => {
+        //if product matches filter, add it to the new array
         (this.shouldProductRender(product,nextFilters)) ? filteredProducts.push(product) : null
       }
     )
@@ -52,7 +53,7 @@ class ProductList extends Component {
     return filteredProducts
   }
 
-  getSlicedProductList(products,offset,all=false) {
+  getSlicedProductList(products,offset,all=false) { //get selection of items based on pagination
     const perPage = this.props.perPage
     const test = products.slice(offset,offset + perPage)
     return (all) ?
@@ -62,7 +63,7 @@ class ProductList extends Component {
   }
 
   shouldProductRender(product,nextFilters=null) {
-    const activeFilters = (nextFilters) ? nextFilters : this.props.filters
+    const activeFilters = (nextFilters) ? nextFilters : this.props.activeFilters
     const productFilters = { "type": product.type.split(','), //create object with filters for product being tested
                              "age": product.age.split(','),
                              "size": product.size.split(','),
@@ -108,8 +109,7 @@ class ProductList extends Component {
                        marginPagesDisplayed={1}
                        containerClassName={"pagination"}
                        onPageChange={this.handlePageClick}
-                       forcePage={this.state.currentPage}
-                            />
+                       forcePage={this.state.currentPage} />
         {
           (slicedProducts.length) ?
             slicedProducts.map(

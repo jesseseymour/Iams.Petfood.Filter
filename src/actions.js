@@ -1,11 +1,11 @@
 import C from './constants'
 
-export function toggleFilter(name,key) {
+export function toggleFilter(name,id) {
   return {
     type: C.TOGGLE_FILTER,
     payload: {
       name,
-      key
+      id
     }
   }
 }

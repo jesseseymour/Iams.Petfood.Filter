@@ -1,17 +1,16 @@
 import { Component } from 'react'
 import fetch from 'isomorphic-fetch'
 
-const ProductFilter = ({ id, name, active, parent, children, onToggleFilter }) => //individual product filter component
+const ProductFilter = ({ id, name, active, parent, children, toggleFilter }) => //individual product filter component
   <div className="product-filter-item" 
     key={ id }
     id={ id }
     data-active={active}
-    data-parent={ (parent) ? 
-      parent : null } //set data-parent to parent list item
-    >
+    data-parent={ (parent) ? parent : null } //set data-parent to parent list item's id 
+  >
     <span onClick={ 
       (parent) ?
-        (e) => onToggleFilter(name.toLowerCase(), id) :
+        (e) => toggleFilter(name.toLowerCase(), id) : //if item has a parent, bind toggleFilter handler
         null 
     }>{ name }</span>
     { children }
@@ -23,15 +22,15 @@ class ProductFilters extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      filters: []
+      availableFilters: []
     }
   }
 
   componentDidMount() { //fetch filter data from json. this should be changed to fetch from the webservice when moved to client app
     fetch('./data/filters.json')
          .then(response => response.json())
-         .then(filters => this.setState({
-            filters
+         .then(availableFilters => this.setState({
+            availableFilters
          }))
          .then(() => this.checkURLForFilters())
   }
@@ -53,11 +52,11 @@ class ProductFilters extends Component {
   }
 
 
-  setFilter({test,array=this.state.filters,results=[]} = {}) { //set filters on page load if any found in the url path
+  setFilter({test,array=this.state.availableFilters,results=[]} = {}) { //set filters on page load if any found in the url path
     function searchFilterArray(array, test) {    
       array.map((node,i) => {
         if(test.toLowerCase() === node.Title.toLowerCase().replace(/[^0-9a-zA-Z]+/g,"-")) { //replace special characters with hyphen
-          results.push({name: node.Title.toLowerCase(), key: node.Id})
+          results.push({name: node.Title.toLowerCase(), id: node.Id})
         }
         searchFilterArray(node.Children, test) //run function again if children found in object
       })
@@ -67,55 +66,54 @@ class ProductFilters extends Component {
       searchFilterArray(array,filter)
     })
     
-    this.props.setFilters(results)
+    this.props.setFilters(results) //use setFilters dispatch
   }
 
 
 
-  list({array=this.state.filters, depth=0, parent=null, render=true} = {}) { 
+  list({array=this.state.availableFilters, depth=0, parent=null, render=true} = {}) { 
     return (array.map((node, i) => {
       return <ProductFilter key={i}
-                      name={node.Title}
-                      numChildren={node.Children.length}
-                      active={this.props.filters.some(filter => filter.key === node.Id)}
-                      parent={parent}
-                      id={node.Id}
-                      depth={depth}
-                      onToggleFilter={this.props.onToggleFilter}>
-                      { this.list({
-                        array:node.Children,
-                        depth:depth+1,
-                        parent:node.Id
-                      }) }
-                      </ProductFilter>
+                            name={node.Title}
+                            numChildren={node.Children.length}
+                            active={this.props.activeFilters.some(filter => filter.id === node.Id)} //search map in list of active filters
+                            parent={parent}
+                            id={node.Id}
+                            depth={depth}
+                            toggleFilter={this.props.toggleFilter}>
+                            { this.list({
+                              array:node.Children,
+                              depth:depth+1,
+                              parent:node.Id
+                            }) }
+             </ProductFilter>
       }))
   }
 
-  activeFilters(array) { //list active filters below filter nav and bind onToggleFilter click event
+  activeFilters(array) { //list active filters below filter nav and bind toggleFilter click event
     return (array.length) ?
       <div>
         <span className="clear-filters"
-              onClick={this.props.clearFilters}>Clear All Filters</span>
-        {array.map((node, i) => {
-          return <span className="active-filter" 
-                       onClick={(e) =>
-                        this.props.onToggleFilter(
-                          node.name.toLowerCase(), 
-                          node.key, 
-                          e.target.parentNode)}
-                       key={"active-" + node.key}>
-                       {node.name}
-                 </span>
-        })}</div> :
-        <span className="active-filter">No active filters</span>
+              onClick={this.props.clearFilters}>
+                Clear All Filters
+        </span>
+        {
+          array.map((node, i) => {
+            return <span className="active-filter" 
+                         onClick={(e) => this.props.toggleFilter(node.name.toLowerCase(), node.id, e.target.parentNode)}
+                         key={"active-" + node.id}>
+                       {node.name} 
+                   </span>
+        })}
+      </div> :
+      <span className="active-filter">No active filters</span>
   }
 
   render() {
-    const { filters } = this.state
     return (
       <div className="filter-list" >
-        {this.list()}
-        <div className="active-filters">{this.activeFilters(this.props.filters)}</div>
+        {this.list()} 
+        <div className="active-filters">{this.activeFilters(this.props.activeFilters)}</div>
       </div>
     )
   }

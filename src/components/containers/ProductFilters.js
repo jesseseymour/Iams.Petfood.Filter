@@ -4,13 +4,13 @@ import { toggleFilter, setFilters, clearFilters } from '../../actions'
 
 const mapStateToProps = (state) => {
   return {
-    filters: state.allFilters
+    activeFilters: state.activeFilters
   }
 }
 
 const mapDispatchToProps = dispatch => { //attach dispatch actions to ProductFilters ui component
   return {
-    onToggleFilter(name,id,e) {
+    toggleFilter(name,id,e) {
       dispatch(
         toggleFilter(name,id)
       )

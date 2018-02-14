@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 const mapStateToProps = (state) => {
   return {
-    filters: state.allFilters
+    activeFilters: state.activeFilters
   }
 }
 
