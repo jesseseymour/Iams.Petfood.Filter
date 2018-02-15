@@ -17,14 +17,30 @@ class ProductList extends Component {
 
   componentDidMount() {
     this.setState({loading:true})
-    fetch('./data/MOCK_DATA.json')
+    const payload = {
+                      ParentCategory: 'dogfood',
+                      Culture: 'en-US',
+                      Filters: [] 
+                    }
+
+    fetch('/api/GetProductsByFilter',
+          {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+              'Content-Type': 'application/json'
+            }
+          }
+          )
             .then(response => response.json())
-            .then(products => products.slice(0,50))
+            .then(products => products.Products.slice(0,50))
             .then(products => this.setState({
                 products,
                 loading: false,
                 filteredProducts: this.updateProductList(products)
             }))
+            .catch(err => console.error(err))
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -63,23 +79,39 @@ class ProductList extends Component {
   }
 
   shouldProductRender(product,nextFilters=null) {
+
     const activeFilters = (nextFilters) ? nextFilters : this.props.activeFilters
-    const productFilters = { "type": product.type.split(','), //create object with filters for product being tested
-                             "age": product.age.split(','),
-                             "size": product.size.split(','),
-                             "need": product.need.split(','),
-                             "flavors": product.flavors.split(',')}
+    const productFilters = product.Departments //use departments array from product object
+
     let match = false
 
+
+    
+
+    /********************************************/
+    //NEED TO GET THIS WORKING TO MOVE FORWARD
+    /********************************************/
     if (activeFilters.length) { //if there are active filters proceed to look for match with tested product
-      Object.entries(productFilters).forEach(([key,value]) => //loop through filters for current product
+      productFilters.map((f) => {
+        activeFilters.includes(f) ? match = true : null
+      })
+
+      /*Object.entries(productFilters).forEach(([key,value]) => //loop through filters for current product
         activeFilters.map((f) => //map through active filters
           value.map((v) => {//now map through current product filter array and look for match with active filter
             (v === f.name) ? match = true : null
           }
           )
         )
-      ) 
+      ) */
+      /********************************************/
+      /********************************************/
+      /********************************************/
+
+
+
+
+
       return match 
     }
     else {
@@ -115,14 +147,14 @@ class ProductList extends Component {
             slicedProducts.map(
               (product, i) => 
                 <Product key={i}
-                         name={product.name}
-                         thumbnail={product.thumbnail}
-                         link={product.link}
-                         bvID={product.bvID}
-                         psID={product.psID}
-                         type={product.type}
-                         age={product.age}
-                         flavors={product.flavors} />
+                         name={product.FullTitle}
+                         thumbnail={product.ImagePath}
+                         link={product.ProductUrl}
+                         bvID={product.BazzarVoiceId}
+                         psID={product.PriceSpiderId} />
+                         //type={product.type}
+                         //age={product.age}
+                         //flavors={product.flavors} />
 
             )
           :
