@@ -9,14 +9,21 @@ class ProductList extends Component {
     this.state = {
       products: [], //all products
       filteredProducts: [], //filtered products
-      loading: false,
-      offset: 0,
-      currentPage: 0
+      loading: true,
+      offset: 0, //pagination offset
+      currentPage: 0 //pagination current page
     }
+
+    //this will be used to store active filter IDs
+    this.activeFilterIds = []
   }
 
+
   componentDidMount() {
-    this.setState({loading:true})
+
+    /********************
+    set payload and call api for available products
+    ********************/
     const payload = {
                       ParentCategory: 'dogfood',
                       Culture: 'en-US',
@@ -34,13 +41,19 @@ class ProductList extends Component {
           }
           )
             .then(response => response.json())
-            .then(products => products.Products.slice(0,50))
+            .then(products => products.Products)
             .then(products => this.setState({
                 products,
                 loading: false,
                 filteredProducts: this.updateProductList(products)
             }))
             .catch(err => console.error(err))
+    /********************
+    end set payload and call api for available products
+    ********************/
+
+    //update local array of active filter IDs
+    this.activeFilterIds = this.getActiveFilterIds(this.props.activeFilters)
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -48,17 +61,29 @@ class ProductList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const filteredProducts = this.updateProductList(null,nextProps.activeFilters)
+    //update local array of active filter IDs
+    this.activeFilterIds = this.getActiveFilterIds(nextProps.activeFilters)
+
+    //get array of filtered products and set state with updated list
     this.setState({
-      filteredProducts,
+      filteredProducts: this.updateProductList(null,nextProps.activeFilters),
       offset: 0,
       currentPage: 0
     })
   }
 
+  //return array of active filter ids
+  getActiveFilterIds(activeFilters){
+    return activeFilters.map(activeFilter => (activeFilter.id))
+  }
+
+  //update product array based on selected filters
   updateProductList(products=null,nextFilters=null) {
     products = (products) ? products : this.state.products
     let filteredProducts = []
+
+    //map through products array and test against active filters
+    //if test passes, push to filteredProducts array
     products.map(
       (product) => {
         //if product matches filter, add it to the new array
@@ -69,7 +94,25 @@ class ProductList extends Component {
     return filteredProducts
   }
 
-  getSlicedProductList(products,offset,all=false) { //get selection of items based on pagination
+  //test to determine if product matches filters
+  shouldProductRender(product,nextFilters=null) {
+    const productFilters = product.Departments //use departments array from product object
+    let match = false //default to false. will change to true if test passes
+    
+
+    if (this.activeFilterIds.length) { //test if all active filter ids are inluded in product id array
+      this.activeFilterIds
+            .every(filter => productFilters.includes(filter)) ? match = true : null
+
+      return match 
+    }
+    else {
+      return true //return true if no filters selected. this will render all products
+    }
+  }
+
+  //get selection of items based on pagination
+  getSlicedProductList(products,offset,all=false) { 
     const perPage = this.props.perPage
     const test = products.slice(offset,offset + perPage)
     return (all) ?
@@ -78,48 +121,8 @@ class ProductList extends Component {
 
   }
 
-  shouldProductRender(product,nextFilters=null) {
-
-    const activeFilters = (nextFilters) ? nextFilters : this.props.activeFilters
-    const productFilters = product.Departments //use departments array from product object
-
-    let match = false
-
-
-    
-
-    /********************************************/
-    //NEED TO GET THIS WORKING TO MOVE FORWARD
-    /********************************************/
-    if (activeFilters.length) { //if there are active filters proceed to look for match with tested product
-      productFilters.map((f) => {
-        activeFilters.includes(f) ? match = true : null
-      })
-
-      /*Object.entries(productFilters).forEach(([key,value]) => //loop through filters for current product
-        activeFilters.map((f) => //map through active filters
-          value.map((v) => {//now map through current product filter array and look for match with active filter
-            (v === f.name) ? match = true : null
-          }
-          )
-        )
-      ) */
-      /********************************************/
-      /********************************************/
-      /********************************************/
-
-
-
-
-
-      return match 
-    }
-    else {
-      return true //return true if no filters selected
-    }
-  }
-
-  handlePageClick = (data) => { //pagination link click
+  //pagination link click
+  handlePageClick = (data) => { 
     let selected = data.selected
     let offset = Math.ceil(selected * this.props.perPage)
     
@@ -135,7 +138,7 @@ class ProductList extends Component {
 
     return (
       <div className="product-list">
-        <h1>Products</h1>
+        <h1>{filteredProducts.length} Products</h1>
         <ReactPaginate pageCount={Math.ceil(filteredProducts.length / this.props.perPage)}
                        pageRangeDisplayed={5}
                        marginPagesDisplayed={1}
@@ -152,16 +155,11 @@ class ProductList extends Component {
                          link={product.ProductUrl}
                          bvID={product.BazzarVoiceId}
                          psID={product.PriceSpiderId} />
-                         //type={product.type}
-                         //age={product.age}
-                         //flavors={product.flavors} />
 
             )
           :
             <span>Currently 0 Products</span>
-          
         }
-        
       </div>
     )
   }
