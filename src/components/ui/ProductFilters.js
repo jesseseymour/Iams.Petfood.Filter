@@ -27,7 +27,7 @@ class ProductFilters extends Component {
   }
 
   componentDidMount() { //fetch filter data from json. this should be changed to fetch from the webservice when moved to client app
-    fetch('./data/filters.json')
+    fetch('./data/filters-dog.json')
          .then(response => response.json())
          .then(availableFilters => this.setState({
             availableFilters
@@ -71,26 +71,26 @@ class ProductFilters extends Component {
 
 
 
-  list({array=this.state.availableFilters, depth=0, parent=null, render=true} = {}) { 
+  listFilters({array=this.state.availableFilters, depth=0, parent=null, render=true} = {}) { 
     return (array.map((node, i) => {
       return <ProductFilter key={i}
-                            name={node.Title}
-                            numChildren={node.Children.length}
-                            active={this.props.activeFilters.some(filter => filter.id === node.Id)} //search map in list of active filters
+                            name={node.FilterTitle}
+                            numChildren={node.SubChildFilters.length}
+                            active={this.props.activeFilters.some(filter => filter.id === node.FilterId)} //search map in list of active filters
                             parent={parent}
-                            id={node.Id}
+                            id={node.FilterId}
                             depth={depth}
                             toggleFilter={this.props.toggleFilter}>
-                            { this.list({
-                              array:node.Children,
+                            { this.listFilters({
+                              array:node.SubChildFilters,
                               depth:depth+1,
-                              parent:node.Id
+                              parent:node.FilterId
                             }) }
              </ProductFilter>
       }))
   }
 
-  activeFilters(array) { //list active filters below filter nav and bind toggleFilter click event
+  renderActiveFilters(array) { //list active filters below filter nav and bind toggleFilter click event
     return (array.length) ?
       <div>
         <span className="clear-filters"
@@ -112,8 +112,8 @@ class ProductFilters extends Component {
   render() {
     return (
       <div className="filter-list" >
-        {this.list()} 
-        <div className="active-filters">{this.activeFilters(this.props.activeFilters)}</div>
+        {this.listFilters()} 
+        <div className="active-filters">{this.renderActiveFilters(this.props.activeFilters)}</div>
       </div>
     )
   }
