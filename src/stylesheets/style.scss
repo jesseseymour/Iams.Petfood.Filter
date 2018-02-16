@@ -10,6 +10,9 @@
   .product{
     padding: 20px;
     flex-basis: 25%;
+    img{
+      max-width: 100%;
+    }
   }
 }
 ul,li{
