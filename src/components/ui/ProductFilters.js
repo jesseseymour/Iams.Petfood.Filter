@@ -1,21 +1,19 @@
 import { Component } from 'react'
 import fetch from 'isomorphic-fetch'
 
-const ProductFilter = ({ id, name, active, parent, children, toggleFilter }) => //individual product filter component
+
+//individual product filter component
+const ProductFilter = ({ id, name, active, parent, children, toggleFilter }) => 
   <div className="product-filter-item" 
-    key={ id }
+    key={ Date.now() }
     id={ id }
     data-active={active}
-    data-parent={ (parent) ? parent : null } //set data-parent to parent list item's id 
-  >
-    <span onClick={ 
-      (parent) ?
-        (e) => toggleFilter(name.toLowerCase(), id) : //if item has a parent, bind toggleFilter handler
-        null 
-    }>{ name }</span>
+    data-parent={ (parent) ? parent : null } /*set data-parent to parent list item's id*/ >
+      <span onClick={ (parent) ? (e) => toggleFilter(name, id) : null /*if item has a parent, bind toggleFilter handler*/ } >
+        { name }
+      </span>
     { children }
   </div>
-
 
 
 class ProductFilters extends Component {
@@ -27,9 +25,10 @@ class ProductFilters extends Component {
     this.path = window.location.pathname.substr(1).split('/') //convert path to array and remove first empty item
     this.base = this.path[0] //use first item as base (natural-cat-food or natural-dog-food)
   }
-
-  componentDidMount() { //fetch filter data from json. this should be changed to fetch from the webservice when moved to client app
-    const data = this.base.indexOf('dog') >= 0 ? 'dog' : 'cat'
+  
+  //fetch filter data from json. this should be changed to fetch from the webservice when moved to client app
+  componentDidMount() { 
+    const data = this.props.isDog ? 'dog' : 'cat' 
 
     fetch('/data/filters-' + data + '.json')
          .then(response => response.json())
@@ -47,8 +46,6 @@ class ProductFilters extends Component {
     const unique = arrArg => arrArg.filter((elem,pos,arr) => arr.indexOf(elem) == pos) //de-dupe array function
     const filterArr = unique(path.slice(1,path.length))//array of filters includes every item in path after 0
 
-    
-    //return
     if (filterArr.length) {
       this.setFilters({filterArr:filterArr})
     } else {
@@ -56,8 +53,8 @@ class ProductFilters extends Component {
     }
   }
 
-
-  setFilters({filterArr,availableFilters=this.state.availableFilters,results=[]} = {}) { //set filters on page load if any found in the url path
+  //set filters on page load if any found in the url path
+  setFilters({filterArr,availableFilters=this.state.availableFilters,results=[]} = {}) { 
     function searchFilterArray(filter, availableFilters) {    
       availableFilters.map((node,i) => {
         if(filter === node.FilterTitle.toLowerCase().replace(/[^0-9a-zA-Z]+/g,"-")) { //replace special characters with hyphen
@@ -66,8 +63,9 @@ class ProductFilters extends Component {
         if(node.SubChildFilters.length) searchFilterArray(filter, node.SubChildFilters) //run function again if children found in object
       })
     }
-
-    filterArr.map((filter) => { //map array of filters found in url
+    
+    //map array of filters found in url
+    filterArr.map((filter) => { 
       searchFilterArray(filter.toLowerCase(), availableFilters)
     })
     
@@ -86,16 +84,17 @@ class ProductFilters extends Component {
                             id={node.FilterId}
                             depth={depth}
                             toggleFilter={this.props.toggleFilter}>
-                            { this.listFilters({
-                              array:node.SubChildFilters,
-                              depth:depth+1,
-                              parent:node.FilterId
-                            }) }
+                              { this.listFilters
+                                ({array:node.SubChildFilters,
+                                  depth:depth+1,
+                                  parent:node.FilterId
+                                })}
              </ProductFilter>
       }))
   }
-
-  renderActiveFilters(array) { //list active filters below filter nav and bind toggleFilter click event
+  
+  //list active filters below filter nav and bind toggleFilter click event
+  renderActiveFilters(array) { 
     return (array.length) ?
       <div>
         <span className="clear-filters"
@@ -106,7 +105,7 @@ class ProductFilters extends Component {
           array.map((node, i) => {
             return <span className="active-filter" 
                          onClick={(e) => this.props.toggleFilter(node.name.toLowerCase(), node.id, e.target.parentNode)}
-                         key={"active-" + node.id}>
+                         key={Date.now() + i}>
                        {node.name} 
                    </span>
         })}

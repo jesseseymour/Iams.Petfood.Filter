@@ -4,7 +4,7 @@ export function toggleFilter(name,id) {
   return {
     type: C.TOGGLE_FILTER,
     payload: {
-      name,
+      name: name.toLowerCase(),
       id
     }
   }
