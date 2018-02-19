@@ -24,10 +24,14 @@ class ProductFilters extends Component {
     this.state = {
       availableFilters: []
     }
+    this.path = window.location.pathname.substr(1).split('/') //convert path to array and remove first empty item
+    this.base = this.path[0] //use first item as base (natural-cat-food or natural-dog-food)
   }
 
   componentDidMount() { //fetch filter data from json. this should be changed to fetch from the webservice when moved to client app
-    fetch('./data/filters-dog.json')
+    const data = this.base.indexOf('dog') >= 0 ? 'dog' : 'cat'
+
+    fetch('/data/filters-' + data + '.json')
          .then(response => response.json())
          .then(availableFilters => this.setState({
             availableFilters
@@ -35,35 +39,36 @@ class ProductFilters extends Component {
          .then(() => this.checkURLForFilters())
   }
 
-  checkURLForFilters() { //check url path or hash for any preset filters
-    const path = window.location.pathname
-    const hash = window.location.hash
-    const base = "dog-foods/"
-    const filterHashStr = hash.substr(hash.indexOf(base) + base.length, hash.length)
-    const filterPathStr = path.substr(path.indexOf(base) + base.length, path.length)
+  //check url path or hash for any preset filters
+  checkURLForFilters() { 
+    const path = this.path
+    const base = this.base
 
-    if (filterHashStr.length || filterPathStr.length) {
-      const unique = (arrArg) => arrArg.filter((elem,pos,arr) => arr.indexOf(elem) == pos) //de-dupe array function
-      const filterArr = unique(filterHashStr.split("/").concat(filterPathStr.split("/"))) //concat hash and path strings and create de-duped array
-      this.setFilter({test:filterArr})
+    const unique = arrArg => arrArg.filter((elem,pos,arr) => arr.indexOf(elem) == pos) //de-dupe array function
+    const filterArr = unique(path.slice(1,path.length))//array of filters includes every item in path after 0
+
+    
+    //return
+    if (filterArr.length) {
+      this.setFilters({filterArr:filterArr})
     } else {
       return
     }
   }
 
 
-  setFilter({test,array=this.state.availableFilters,results=[]} = {}) { //set filters on page load if any found in the url path
-    function searchFilterArray(array, test) {    
-      array.map((node,i) => {
-        if(test.toLowerCase() === node.Title.toLowerCase().replace(/[^0-9a-zA-Z]+/g,"-")) { //replace special characters with hyphen
-          results.push({name: node.Title.toLowerCase(), id: node.Id})
+  setFilters({filterArr,availableFilters=this.state.availableFilters,results=[]} = {}) { //set filters on page load if any found in the url path
+    function searchFilterArray(filter, availableFilters) {    
+      availableFilters.map((node,i) => {
+        if(filter === node.FilterTitle.toLowerCase().replace(/[^0-9a-zA-Z]+/g,"-")) { //replace special characters with hyphen
+          results.push({name: node.FilterTitle.toLowerCase(), id: node.FilterId})
         }
-        searchFilterArray(node.Children, test) //run function again if children found in object
+        if(node.SubChildFilters.length) searchFilterArray(filter, node.SubChildFilters) //run function again if children found in object
       })
     }
 
-    test.map((filter) => { //map array of filters found in url
-      searchFilterArray(array,filter)
+    filterArr.map((filter) => { //map array of filters found in url
+      searchFilterArray(filter.toLowerCase(), availableFilters)
     })
     
     this.props.setFilters(results) //use setFilters dispatch
