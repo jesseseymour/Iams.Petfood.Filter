@@ -28,14 +28,18 @@ class ProductFilters extends Component {
   
   //fetch filter data from json. this should be changed to fetch from the webservice when moved to client app
   componentDidMount() { 
-    const data = this.props.isDog ? 'dog' : 'cat' 
-
-    fetch('/data/filters-' + data + '.json')
-         .then(response => response.json())
-         .then(availableFilters => this.setState({
-            availableFilters
-         }))
-         .then(() => this.checkURLForFilters())
+    const data = this.props.isDog ? 'dogfood' : 'catfood' 
+    fetch('/api/GetFilters/index/' + data,
+    {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => response.json())
+      .then(availableFilters => this.setState({ availableFilters }))
+      .then(() => this.checkURLForFilters())
   }
 
   //check url path or hash for any preset filters
