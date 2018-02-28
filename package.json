@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prestart": "node_modules/.bin/webpack",
-    "start": "node_modules/.bin/webpack-dev-server"
+    "start": "webpack-dev-server --config webpack.dev.js",
+    "build": "sh ./build.sh"
   },
   "keywords": [],
   "author": "Jesse Seymour",
