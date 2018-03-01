@@ -28,7 +28,7 @@ class ProductFilters extends Component {
   
   //fetch filter data from json. this should be changed to fetch from the webservice when moved to client app
   componentDidMount() { 
-    const data = this.props.isDog ? 'dogfood' : 'catfood' 
+    const data = this.props.isDog ? 'dog-products' : 'cat-products'
     fetch('/api/GetFilters/index/' + data,
     {
       method: 'GET',

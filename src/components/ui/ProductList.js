@@ -25,8 +25,8 @@ class ProductList extends Component {
     set payload and call api for available products
     ********************/
     const payload = {
-                      ParentCategory: this.props.isDog ? 'dogfood' : 'catfood',
-                      Culture: 'en-US',
+                      ParentCategory: this.props.isDog ? 'dog-products' : 'cat-products',
+                      Culture: 'en',
                       Filters: [] 
                     }
 
