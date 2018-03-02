@@ -3,7 +3,7 @@ const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
 
 module.exports = merge(common, {
-    devtool: 'cheap-module-source-map',
+    devtool: 'source-map',
     debug: true,
     devServer: {
         inline: true,
@@ -13,7 +13,12 @@ module.exports = merge(common, {
         hot: true,
         hotOnly: true,
         proxy: {
-            "/api": "http://localhost:48952"
+            "/api/**": {
+                target: "http://localhost-wf:48952",
+                secure: false,
+                logLevel: 'debug',
+                changeOrigin: true
+            }
         }
     }
 });

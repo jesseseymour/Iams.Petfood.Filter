@@ -59,3 +59,4 @@ typings/
 
 dist/assets/bundle.min.js
 dist/assets/bundle.min.js.map
+/.vscode/launch.json
