@@ -1,6 +1,7 @@
 import ProductFilters from '../ui/ProductFilters'
 import { connect } from 'react-redux'
 import { toggleFilter, setFilters, clearFilters } from '../../actions'
+import { withRouter } from 'react-router-dom'
 
 const mapStateToProps = (state) => {
   return {
@@ -10,9 +11,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => { //attach dispatch actions to ProductFilters ui component
   return {
-    toggleFilter(name,id,e) {
+    toggleFilter(name,id,parent) {
       dispatch(
-        toggleFilter(name,id)
+        toggleFilter(name,id,parent)
       )
     },
     setFilters(array) {

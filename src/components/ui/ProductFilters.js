@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import fetch from 'isomorphic-fetch'
+import { withRouter } from 'react-router-dom'
 
 const ProductFilter = ({ id, name, active, parent, children, toggleFilter }) => //individual product filter component
   <div className="product-filter-item" 
@@ -27,7 +28,7 @@ class ProductFilters extends Component {
   }
 
   componentDidMount() { //fetch filter data from json. this should be changed to fetch from the webservice when moved to client app
-    fetch('./data/filters.json')
+    fetch('/data/filters.json')
          .then(response => response.json())
          .then(availableFilters => this.setState({
             availableFilters
@@ -35,56 +36,85 @@ class ProductFilters extends Component {
          .then(() => this.checkURLForFilters())
   }
 
-  checkURLForFilters() { //check url path or hash for any preset filters
-    const path = window.location.pathname
-    const hash = window.location.hash
-    const base = "dog-foods/"
-    const filterHashStr = hash.substr(hash.indexOf(base) + base.length, hash.length)
-    const filterPathStr = path.substr(path.indexOf(base) + base.length, path.length)
+  // componentWillReceiveProps(nextProps){
+  //   //this.props.history.replace('/testing')
+  //   console.log('receive')
+  // }
 
-    if (filterHashStr.length || filterPathStr.length) {
-      const unique = (arrArg) => arrArg.filter((elem,pos,arr) => arr.indexOf(elem) == pos) //de-dupe array function
-      const filterArr = unique(filterHashStr.split("/").concat(filterPathStr.split("/"))) //concat hash and path strings and create de-duped array
-      this.setFilter({test:filterArr})
-    } else {
-      return
+  // shouldComponentUpdate(nextProps, nextState){
+  //   console.log(nextProps === this.props)
+  //   return true
+  // }
+
+  checkURLForFilters() { //check url path or hash for any preset filters
+    //example query string: ?protein=beef~chicken&type=dry
+    const search = this.props.location.search.substr(1).split('&')
+
+    //turn query string into array of filters
+
+    const searchGroups = search.map( searchTerm => {
+        let searchGroup = {}
+        searchGroup.parent = searchTerm.substr(0,searchTerm.indexOf('='))
+        searchGroup.terms = searchTerm.substr(searchTerm.indexOf('=') + 1, searchTerm.length).split('~')
+        return searchGroup
+      }
+    )
+    //send query string filters to setFilters function
+    if (searchGroups.length) {
+      this.setFilters({filterArr:searchGroups})
     }
   }
 
 
-  setFilter({test,array=this.state.availableFilters,results=[]} = {}) { //set filters on page load if any found in the url path
-    function searchFilterArray(array, test) {    
-      array.map((node,i) => {
-        if(test.toLowerCase() === node.Title.toLowerCase().replace(/[^0-9a-zA-Z]+/g,"-")) { //replace special characters with hyphen
-          results.push({name: node.Title.toLowerCase(), id: node.Id})
+  //set filters on page load if any found in the url path
+  setFilters({ filterArr, availableFilters = this.state.availableFilters, results = [] } = {}) {
+    function searchFilterArray(filter, parent, availableFilters) {
+      availableFilters.map((node, i) => {
+        if (filter === node.FilterTitle.toLowerCase().replace(/[^0-9a-zA-Z]+/g, "-")) { //replace special characters with hyphen
+          results.push({ name: node.FilterTitle.toLowerCase(), id: node.FilterDevName, parent: parent })
         }
-        searchFilterArray(node.Children, test) //run function again if children found in object
+        if (node.SubChildFilters.length) searchFilterArray(filter, parent, node.SubChildFilters) //run function again if children found in object
       })
     }
 
-    test.map((filter) => { //map array of filters found in url
-      searchFilterArray(array,filter)
+    //map array of filters found in url
+    filterArr.map((filterGroup) => {
+      filterGroup.terms.map( filter => searchFilterArray(filter.toLowerCase(), filterGroup.parent, availableFilters) )
     })
-    
+
     this.props.setFilters(results) //use setFilters dispatch
   }
 
+  updateQuery() {
+    //take all active filters and add to query string
+    //first build the query string from active filters
+    let activeFilters = {}
+    this.props.activeFilters.map(filter => {
+      let parent = filter.parent
+      //activeFilters.filter.parent
+    })
+    console.log("update query string")
+  }
 
+  handleFilterClick(name,id,parent) {
+    this.updateQuery()
+    this.props.toggleFilter(name.toLowerCase(),id,parent)
+  }
 
   list({array=this.state.availableFilters, depth=0, parent=null, render=true} = {}) { 
     return (array.map((node, i) => {
       return <ProductFilter key={i}
-                            name={node.Title}
-                            numChildren={node.Children.length}
-                            active={this.props.activeFilters.some(filter => filter.id === node.Id)} //search map in list of active filters
+                            name={node.FilterTitle}
+                            numChildren={node.SubChildFilters.length}
+                            active={this.props.activeFilters.some(filter => filter.id === node.FilterDevName)} //search map in list of active filters
                             parent={parent}
-                            id={node.Id}
+                            id={node.FilterDevName}
                             depth={depth}
-                            toggleFilter={this.props.toggleFilter}>
+                            toggleFilter={(e) => this.handleFilterClick(node.FilterTitle, node.FilterDevName, parent)}>
                             { this.list({
-                              array:node.Children,
+                              array:node.SubChildFilters,
                               depth:depth+1,
-                              parent:node.Id
+                              parent:node.FilterDevName
                             }) }
              </ProductFilter>
       }))
@@ -100,7 +130,8 @@ class ProductFilters extends Component {
         {
           array.map((node, i) => {
             return <span className="active-filter" 
-                         onClick={(e) => this.props.toggleFilter(node.name.toLowerCase(), node.id, e.target.parentNode)}
+                         onClick={(e) => this.handleFilterClick(node.name.toLowerCase(), node.id)}
+                         //onClick={(e) => this.props.toggleFilter(node.name.toLowerCase(), node.id, e.target.parentNode)}
                          key={"active-" + node.id}>
                        {node.name} 
                    </span>
@@ -120,4 +151,5 @@ class ProductFilters extends Component {
 
 }
 
-export default ProductFilters
+const ProductFiltersWithRouter = withRouter(ProductFilters)
+export default ProductFiltersWithRouter

@@ -1,116 +1,113 @@
 [
   {
-    "Id": "40d8058e-a3f6-6930-bcd1-ff00004ce6f7",
-    "Title": "Type",
-    "Children": [
+    "ChildFilters": [],
+    "FilterDevName": "type",
+    "FilterId": "f85e112d-db0e-6e5d-ba63-ff01006cf007",
+    "FilterTitle": "Type",
+    "IsHidden": false,
+    "ParentDevName": null,
+    "ParentFilter": "f45e112d-db0e-6e5d-ba63-ff01006cf007",
+    "SubChildFilters": [
       {
-        "Id": "41d8058e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Dry",
-        "Children": []
+        "ChildFilters": [],
+        "FilterDevName": "dry",
+        "FilterId": "fc5e112d-db0e-6e5d-ba63-ff01006cf007",
+        "FilterTitle": "Dry",
+        "IsHidden": false,
+        "ParentDevName": null,
+        "ParentFilter": "f85e112d-db0e-6e5d-ba63-ff01006cf007",
+        "SubChildFilters": []
       },
       {
-        "Id": "42d8058e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Wet",
-        "Children": []
-      },
-      {
-        "Id": "43d8058e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Treat",
-        "Children": []
+        "ChildFilters": [],
+        "FilterDevName": "wet",
+        "FilterId": "fe5e112d-db0e-6e5d-ba63-ff01006cf007",
+        "FilterTitle": "Wet",
+        "IsHidden": false,
+        "ParentDevName": null,
+        "ParentFilter": "f85e112d-db0e-6e5d-ba63-ff01006cf007",
+        "SubChildFilters": []
       }
     ]
   },
   {
-    "Id": "3cd8058e-a3f6-6930-bcd1-ff00004ce6f7",
-    "Title": "Age",
-    "Children": [
+    "ChildFilters": [],
+    "FilterDevName": "protein",
+    "FilterId": "fa5e112d-db0e-6e5d-ba63-ff01006cf007",
+    "FilterTitle": "Protein",
+    "IsHidden": false,
+    "ParentDevName": null,
+    "ParentFilter": "f45e112d-db0e-6e5d-ba63-ff01006cf007",
+    "SubChildFilters": [
       {
-        "Id": "3dd8058e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Puppy",
-        "Children": []
+        "ChildFilters": [],
+        "FilterDevName": "chicken",
+        "FilterId": "005f112d-db0e-6e5d-ba63-ff01006cf007",
+        "FilterTitle": "Chicken",
+        "IsHidden": false,
+        "ParentDevName": null,
+        "ParentFilter": "fa5e112d-db0e-6e5d-ba63-ff01006cf007",
+        "SubChildFilters": []
       },
       {
-        "Id": "3ed8058e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Adult",
-        "Children": []
+        "ChildFilters": [],
+        "FilterDevName": "turkey",
+        "FilterId": "025f112d-db0e-6e5d-ba63-ff01006cf007",
+        "FilterTitle": "Turkey",
+        "IsHidden": false,
+        "ParentDevName": null,
+        "ParentFilter": "fa5e112d-db0e-6e5d-ba63-ff01006cf007",
+        "SubChildFilters": []
       },
       {
-        "Id": "3fd8058e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Senior",
-        "Children": []
-      }
-    ]
-  },
-  {
-    "Id": "44d8058e-a3f6-6930-bcd1-ff00004ce6f7",
-    "Title": "Dog Size",
-    "Children": [
-      {
-        "Id": "45d8058e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Small",
-        "Children": []
+        "ChildFilters": [],
+        "FilterDevName": "salmon",
+        "FilterId": "0a5f112d-db0e-6e5d-ba63-ff01006cf007",
+        "FilterTitle": "Salmon",
+        "IsHidden": false,
+        "ParentDevName": null,
+        "ParentFilter": "fa5e112d-db0e-6e5d-ba63-ff01006cf007",
+        "SubChildFilters": []
       },
       {
-        "Id": "46d8058e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Medium",
-        "Children": []
+        "ChildFilters": [],
+        "FilterDevName": "beef",
+        "FilterId": "045f112d-db0e-6e5d-ba63-ff01006cf007",
+        "FilterTitle": "Beef",
+        "IsHidden": false,
+        "ParentDevName": null,
+        "ParentFilter": "fa5e112d-db0e-6e5d-ba63-ff01006cf007",
+        "SubChildFilters": []
       },
       {
-        "Id": "47d8058e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Large",
-        "Children": []
-      }
-    ]
-  },
-  {
-    "Id": "48d8058e-a3f6-6930-bcd1-ff00004ce6f7",
-    "Title": "Specific Need",
-    "Children": [
-      {
-        "Id": "49d8058e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Oral Care",
-        "Children": []
+        "ChildFilters": [],
+        "FilterDevName": "trout",
+        "FilterId": "0c5f112d-db0e-6e5d-ba63-ff01006cf007",
+        "FilterTitle": "Trout",
+        "IsHidden": false,
+        "ParentDevName": null,
+        "ParentFilter": "fa5e112d-db0e-6e5d-ba63-ff01006cf007",
+        "SubChildFilters": []
       },
       {
-        "Id": "4ad8058e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Skin & Coat",
-        "Children": []
+        "ChildFilters": [],
+        "FilterDevName": "duck",
+        "FilterId": "0e5f112d-db0e-6e5d-ba63-ff01006cf007",
+        "FilterTitle": "Duck",
+        "IsHidden": false,
+        "ParentDevName": null,
+        "ParentFilter": "fa5e112d-db0e-6e5d-ba63-ff01006cf007",
+        "SubChildFilters": []
       },
       {
-        "Id": "4bd8058e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Hip & Joint",
-        "Children": []
-      },
-      {
-        "Id": "4cd8058e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Weight",
-        "Children": []
-      }
-    ]
-  },
-  {
-    "Id": "d30a068e-a3f6-6930-bcd1-ff00004ce6f7",
-    "Title": "Flavors",
-    "Children": [
-      {
-        "Id": "060b068e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Beef/Steak",
-        "Children": []
-      },
-      {
-        "Id": "4be9068e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Lamb",
-        "Children": []
-      },
-      {
-        "Id": "050b068e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Fish",
-        "Children": []
-      },
-      {
-        "Id": "040b068e-a3f6-6930-bcd1-ff00004ce6f7",
-        "Title": "Chicken",
-        "Children": []
+        "ChildFilters": [],
+        "FilterDevName": "liver",
+        "FilterId": "085f112d-db0e-6e5d-ba63-ff01006cf007",
+        "FilterTitle": "Liver",
+        "IsHidden": false,
+        "ParentDevName": null,
+        "ParentFilter": "fa5e112d-db0e-6e5d-ba63-ff01006cf007",
+        "SubChildFilters": []
       }
     ]
   }

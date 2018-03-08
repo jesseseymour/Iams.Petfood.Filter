@@ -17,7 +17,7 @@ class ProductList extends Component {
 
   componentDidMount() {
     this.setState({loading:true})
-    fetch('./data/MOCK_DATA.json')
+    fetch('/data/MOCK_DATA.json')
             .then(response => response.json())
             .then(products => products.slice(0,50))
             .then(products => this.setState({
