@@ -36,15 +36,9 @@ class ProductFilters extends Component {
          .then(() => this.checkURLForFilters())
   }
 
-  // componentWillReceiveProps(nextProps){
-  //   //this.props.history.replace('/testing')
-  //   console.log('receive')
-  // }
-
-  // shouldComponentUpdate(nextProps, nextState){
-  //   console.log(nextProps === this.props)
-  //   return true
-  // }
+  componentWillReceiveProps(nextProps){
+    if(this.props.activeFilters !== nextProps.activeFilters) this.updateQuery(nextProps.activeFilters)
+  }
 
   checkURLForFilters() { //check url path or hash for any preset filters
     //example query string: ?protein=beef~chicken&type=dry
@@ -85,19 +79,26 @@ class ProductFilters extends Component {
     this.props.setFilters(results) //use setFilters dispatch
   }
 
-  updateQuery() {
+  updateQuery(activeFilters) {
     //take all active filters and add to query string
     //first build the query string from active filters
-    let activeFilters = {}
-    this.props.activeFilters.map(filter => {
+    let activeFiltersObj = {}
+    let filterStr = '?'
+    activeFilters.map(filter => {
       let parent = filter.parent
-      //activeFilters.filter.parent
+      activeFiltersObj[parent] ? activeFiltersObj[parent].push(filter.id) : activeFiltersObj[parent] = [filter.id]
+
     })
-    console.log("update query string")
+
+    for (const set in activeFiltersObj){
+      let seperator = filterStr.length > 1 ? '&' : ''
+      filterStr += `${seperator}${set}=${activeFiltersObj[set].join('~')}`
+    }
+
+    this.props.history.replace({search: filterStr})
   }
 
   handleFilterClick(name,id,parent) {
-    this.updateQuery()
     this.props.toggleFilter(name.toLowerCase(),id,parent)
   }
 
@@ -131,7 +132,6 @@ class ProductFilters extends Component {
           array.map((node, i) => {
             return <span className="active-filter" 
                          onClick={(e) => this.handleFilterClick(node.name.toLowerCase(), node.id)}
-                         //onClick={(e) => this.props.toggleFilter(node.name.toLowerCase(), node.id, e.target.parentNode)}
                          key={"active-" + node.id}>
                        {node.name} 
                    </span>
