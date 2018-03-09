@@ -29,7 +29,7 @@ class ProductFilters extends Component {
   
   //fetch filter data from json. this should be changed to fetch from the webservice when moved to client app
   componentDidMount() { 
-    fetch('/api/GetFilters/index/' + this.props.rootData.category.urlName,
+    fetch('/api/GetFilters/index/' + this.props.rootData.department.urlName,
     {
       method: 'GET',
       headers: {
@@ -133,7 +133,7 @@ class ProductFilters extends Component {
       <div>
         <span className="clear-filters"
               onClick={this.props.clearFilters}>
-                Clear All Filters
+                {this.props.rootData.labels.clearfilters}
         </span>
         {
           array.map((node, i) => {
@@ -150,7 +150,7 @@ class ProductFilters extends Component {
   render() {
     return (
       <div className="filter-container">
-        <div className="productType">{this.props.rootData.category.title}</div>
+        <div className="productType">{this.props.rootData.department.title}</div>
         <div>{this.props.rootData.labels.filter}</div>
         <div className="filter-list" >
           <div className="product-filter-item" onClick={this.props.clearFilters}>{this.props.rootData.labels.allproducts}</div>
