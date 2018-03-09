@@ -7,15 +7,22 @@
     <title>Product Filter</title>
 </head>
 <body>
-<div id="react-container" 
-     data-catfood="Cat Food" 
-     data-dogfood="Dog Food" 
-     data-filter="Filter" 
-     data-allproducts="All Products" 
-     data-productsfound="Products Found"
-     data-previous="Previous"
-     data-next="Next"
-     data-noactivefilters="No Active Filters"></div>
+<div id="react-container"></div>
+<script>
+    document.getElementById('react-container').setAttribute('data-root', JSON.stringify({
+        'labels': {
+            'filter':'Filter', 
+            'allproducts':'All Products', 
+            'productsfound':'Products Found',
+            'previous':'Previous',
+            'next':'Next',
+            'noactivefilters':'No Active Filters'},
+        'baseUrl': '~/natural-cat-products',
+        'category': {
+            'title': 'Cat Food',
+            'urlName': 'cat-products'}
+        }));
+</script>
 <script src="/assets/bundle.min.js"></script>
 </body>
 </html>

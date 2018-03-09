@@ -25,7 +25,7 @@ class ProductList extends Component {
     set payload and call api for available products
     ********************/
     const payload = {
-                      ParentCategory: this.props.isDog ? 'dog-products' : 'cat-products',
+                      ParentCategory: this.props.rootData.category.urlName,
                       Culture: 'en',
                       Filters: [] 
                     }
@@ -138,12 +138,12 @@ class ProductList extends Component {
 
     return (
       <div className="product-list">
-        <h1>{filteredProducts.length} {this.props.rootData.productsfound}</h1>
+        <h1>{filteredProducts.length} {this.props.rootData.labels.productsfound}</h1>
         <ReactPaginate pageCount={Math.ceil(filteredProducts.length / this.props.perPage)}
                        pageRangeDisplayed={5}
                        marginPagesDisplayed={1}
-                       nextLabel={this.props.rootData.next}
-                       previousLabel={this.props.rootData.previous}
+                       nextLabel={this.props.rootData.labels.next}
+                       previousLabel={this.props.rootData.labels.previous}
                        containerClassName={"pagination"}
                        onPageChange={this.handlePageClick}
                        forcePage={this.state.currentPage} />
