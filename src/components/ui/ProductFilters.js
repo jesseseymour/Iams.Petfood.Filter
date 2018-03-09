@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import fetch from 'isomorphic-fetch'
+import { withRouter } from 'react-router-dom'
 
 
 //individual product filter component
@@ -42,56 +43,86 @@ class ProductFilters extends Component {
       .then(() => this.checkURLForFilters())
   }
 
-  //check url path or hash for any preset filters
-  checkURLForFilters() { 
-    const path = this.path
-    const base = this.base
+  componentWillReceiveProps(nextProps){
+    if(this.props.activeFilters !== nextProps.activeFilters) this.updateQuery(nextProps.activeFilters)
+  }
 
-    const unique = arrArg => arrArg.filter((elem,pos,arr) => arr.indexOf(elem) == pos) //de-dupe array function
-    const filterArr = unique(path.slice(1,path.length))//array of filters includes every item in path after 0
+  checkURLForFilters() { //check url path or hash for any preset filters
+    //example query string: ?protein=beef~chicken&type=dry
+    const search = this.props.location.search.substr(1).split('&')
 
-    if (filterArr.length) {
-      this.setFilters({filterArr:filterArr})
-    } else {
-      return
+    //turn query string into array of filters
+
+    const searchGroups = search.map( searchTerm => {
+        let searchGroup = {}
+        searchGroup.parent = searchTerm.substr(0,searchTerm.indexOf('='))
+        searchGroup.terms = searchTerm.substr(searchTerm.indexOf('=') + 1, searchTerm.length).split('~')
+        return searchGroup
+      }
+    )
+    //send query string filters to setFilters function
+    if (searchGroups.length) {
+      this.setFilters({filterArr:searchGroups})
     }
   }
 
   //set filters on page load if any found in the url path
-  setFilters({filterArr,availableFilters=this.state.availableFilters,results=[]} = {}) { 
-    function searchFilterArray(filter, availableFilters) {    
-      availableFilters.map((node,i) => {
-        if(filter === node.FilterTitle.toLowerCase().replace(/[^0-9a-zA-Z]+/g,"-")) { //replace special characters with hyphen
-          results.push({name: node.FilterTitle.toLowerCase(), id: node.FilterId})
+  //set filters on page load if any found in the url path
+  setFilters({ filterArr, availableFilters = this.state.availableFilters, results = [] } = {}) {
+    function searchFilterArray(filter, parent, availableFilters) {
+      availableFilters.map((node, i) => {
+        if (filter === node.FilterTitle.toLowerCase().replace(/[^0-9a-zA-Z]+/g, "-")) { //replace special characters with hyphen
+          results.push({ name: node.FilterTitle.toLowerCase(), id: node.FilterDevName, parent: parent })
         }
-        if(node.SubChildFilters.length) searchFilterArray(filter, node.SubChildFilters) //run function again if children found in object
+        if (node.SubChildFilters.length) searchFilterArray(filter, parent, node.SubChildFilters) //run function again if children found in object
       })
     }
     
     //map array of filters found in url
-    filterArr.map((filter) => { 
-      searchFilterArray(filter.toLowerCase(), availableFilters)
+    filterArr.map((filterGroup) => {
+      filterGroup.terms.map( filter => searchFilterArray(filter.toLowerCase(), filterGroup.parent, availableFilters) )
     })
-    
+
     this.props.setFilters(results) //use setFilters dispatch
   }
 
+  updateQuery(activeFilters) {
+    //take all active filters and add to query string
+    //first build the query string from active filters
+    let activeFiltersObj = {}
+    let filterStr = '?'
+    activeFilters.map(filter => {
+      let parent = filter.parent
+      activeFiltersObj[parent] ? activeFiltersObj[parent].push(filter.id) : activeFiltersObj[parent] = [filter.id]
 
+    })
+
+    for (const set in activeFiltersObj){
+      let seperator = filterStr.length > 1 ? '&' : ''
+      filterStr += `${seperator}${set}=${activeFiltersObj[set].join('~')}`
+    }
+
+    this.props.history.replace({search: filterStr})
+  }
+
+  handleFilterClick(name,id,parent) {
+    this.props.toggleFilter(name.toLowerCase(),id,parent)
+  }
 
   listFilters({array=this.state.availableFilters, depth=0, parent=null, render=true} = {}) { 
     return (array.map((node, i) => {
       return <ProductFilter key={i}
                             name={node.FilterTitle}
                             numChildren={node.SubChildFilters.length}
-                            active={this.props.activeFilters.some(filter => filter.id === node.FilterId)} //search map in list of active filters
+                            active={this.props.activeFilters.some(filter => filter.id === node.FilterDevName)} //search map in list of active filters
                             parent={parent}
-                            id={node.FilterId}
+                            id={node.FilterDevName}
                             depth={depth}
-                            toggleFilter={this.props.toggleFilter}>
+                            toggleFilter={(e) => this.handleFilterClick(node.FilterTitle, node.FilterDevName, parent)}>
                               { this.listFilters
                                 ({array:node.SubChildFilters,
                                   depth:depth+1,
-                                  parent:node.FilterId
+                                  parent:node.FilterDevName
                                 })}
              </ProductFilter>
       }))
@@ -108,7 +139,7 @@ class ProductFilters extends Component {
         {
           array.map((node, i) => {
             return <span className="active-filter" 
-                         onClick={(e) => this.props.toggleFilter(node.name.toLowerCase(), node.id, e.target.parentNode)}
+                         onClick={(e) => this.handleFilterClick(node.name.toLowerCase(), node.id)}
                          key={Date.now() + i}>
                        {node.name} 
                    </span>
@@ -133,4 +164,5 @@ class ProductFilters extends Component {
 
 }
 
-export default ProductFilters
+const ProductFiltersWithRouter = withRouter(ProductFilters)
+export default ProductFiltersWithRouter
