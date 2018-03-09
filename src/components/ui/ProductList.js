@@ -138,10 +138,12 @@ class ProductList extends Component {
 
     return (
       <div className="product-list">
-        <h1>{filteredProducts.length} Products</h1>
+        <h1>{filteredProducts.length} {this.props.rootData.productsfound}</h1>
         <ReactPaginate pageCount={Math.ceil(filteredProducts.length / this.props.perPage)}
                        pageRangeDisplayed={5}
                        marginPagesDisplayed={1}
+                       nextLabel={this.props.rootData.next}
+                       previousLabel={this.props.rootData.previous}
                        containerClassName={"pagination"}
                        onPageChange={this.handlePageClick}
                        forcePage={this.state.currentPage} />

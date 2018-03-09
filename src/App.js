@@ -14,9 +14,9 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <ProductFilters isDog={this.state.isDog} />
-        <ProductList isDog={this.state.isDog} />
+      <div className="NutroProductFilter">
+        <ProductFilters isDog={this.state.isDog} rootData={document.getElementById('react-container').dataset} />
+        <ProductList isDog={this.state.isDog} rootData={document.getElementById('react-container').dataset} />
       </div>
     )
   }

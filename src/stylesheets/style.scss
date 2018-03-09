@@ -1,6 +1,14 @@
 *{
   box-sizing: border-box;
 }
+html,body{
+  padding: 0;
+  margin: 0;
+}
+.NutroProductFilter{
+  display: flex;
+  max-width: 1400px;
+}
 .product-list{
   display: flex;
   flex-flow: row wrap;
@@ -21,6 +29,7 @@ ul,li{
   list-style: none;
 }
 .filter-list{
+  flex-basis: 32%;
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-end;

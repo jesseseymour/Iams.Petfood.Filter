@@ -114,14 +114,19 @@ class ProductFilters extends Component {
                    </span>
         })}
       </div> :
-      <span className="active-filter">No active filters</span>
+      <span className="active-filter">{this.props.rootData.noactivefilters}</span>
   }
 
   render() {
     return (
-      <div className="filter-list" >
-        {this.listFilters()} 
-        <div className="active-filters">{this.renderActiveFilters(this.props.activeFilters)}</div>
+      <div className="filter-container">
+        <div className="productType">{this.props.isDog ? this.props.rootData.dogfood : this.props.rootData.catfood}</div>
+        <div>{this.props.rootData.filter}</div>
+        <div className="filter-list" >
+          <div className="product-filter-item" onClick={this.props.clearFilters}>{this.props.rootData.allproducts}</div>
+          {this.listFilters()} 
+          <div className="active-filters">{this.renderActiveFilters(this.props.activeFilters)}</div>
+        </div>
       </div>
     )
   }
