@@ -154,7 +154,7 @@ class ProductList extends Component {
                 <Product key={i}
                          name={product.FullTitle}
                          thumbnail={product.ImagePath}
-                         link={product.UrlName}
+                         link={this.props.rootData.baseUrl + "/" + product.UrlName}
                          bvID={product.BazzarVoiceId}
                          psID={product.PriceSpiderId} />
 
