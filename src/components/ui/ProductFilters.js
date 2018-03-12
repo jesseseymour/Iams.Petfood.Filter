@@ -29,8 +29,7 @@ class ProductFilters extends Component {
   
   //fetch filter data from json. this should be changed to fetch from the webservice when moved to client app
   componentDidMount() { 
-    const data = this.props.isDog ? 'dog-products' : 'cat-products'
-    fetch('/api/GetFilters/index/' + data,
+    fetch('/api/GetFilters/index/' + this.props.rootData.department.urlName,
     {
       method: 'GET',
       headers: {
@@ -134,7 +133,7 @@ class ProductFilters extends Component {
       <div>
         <span className="clear-filters"
               onClick={this.props.clearFilters}>
-                Clear All Filters
+                {this.props.rootData.labels.clearfilters}
         </span>
         {
           array.map((node, i) => {
@@ -145,16 +144,16 @@ class ProductFilters extends Component {
                    </span>
         })}
       </div> :
-      <span className="active-filter">{this.props.rootData.noactivefilters}</span>
+      <span className="active-filter">{this.props.rootData.labels.noactivefilters}</span>
   }
 
   render() {
     return (
       <div className="filter-container">
-        <div className="productType">{this.props.isDog ? this.props.rootData.dogfood : this.props.rootData.catfood}</div>
-        <div>{this.props.rootData.filter}</div>
+        <div className="productType">{this.props.rootData.department.title}</div>
+        <div>{this.props.rootData.labels.filter}</div>
         <div className="filter-list" >
-          <div className="product-filter-item" onClick={this.props.clearFilters}>{this.props.rootData.allproducts}</div>
+          <div className="product-filter-item" onClick={this.props.clearFilters}>{this.props.rootData.labels.allproducts}</div>
           {this.listFilters()} 
           <div className="active-filters">{this.renderActiveFilters(this.props.activeFilters)}</div>
         </div>
