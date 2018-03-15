@@ -4,16 +4,17 @@ import { withRouter } from 'react-router-dom'
 
 
 //individual product filter component
-const ProductFilter = ({ id, name, active, parent, children, toggleFilter }) => 
+const ProductFilter = ({ id, name, active, parent, children, toggleFilter, dataStr }) => 
   <div className="product-filter-item" 
     key={ Date.now() }
     id={ id }
     data-active={active}
     data-parent={ (parent) ? parent : null } /*set data-parent to parent list item's id*/ >
-      <span onClick={ (parent) ? (e) => toggleFilter(name, id) : null /*if item has a parent, bind toggleFilter handler*/ } >
+      <span onClick={ (parent) ? (e) => toggleFilter(name, id) : null /*if item has a parent, bind toggleFilter handler*/ } 
+        /* {dataStr} */>
         { name }
       </span>
-    { children }
+    <div className="children" id={ `${id}-children`}>{ children }</div>
   </div>
 
 
@@ -118,7 +119,8 @@ class ProductFilters extends Component {
                             parent={parent}
                             id={node.FilterDevName}
                             depth={depth}
-                            toggleFilter={(e) => this.handleFilterClick(node.FilterTitle, node.FilterDevName, parent)}>
+                            toggleFilter={(e) => this.handleFilterClick(node.FilterTitle, node.FilterDevName, parent)}
+                            dataStr={parent ? "data-toggle='collapse' data-target=`${node.FilterDevName}-children`" : null}>
                               { this.listFilters
                                 ({array:node.SubChildFilters,
                                   depth:depth+1,
@@ -151,7 +153,7 @@ class ProductFilters extends Component {
   render() {
     return (
       <div className="filter-container">
-        <div className="productType">{this.props.isDog ? this.props.rootData.dogfood : this.props.rootData.catfood}</div>
+        <div className="product-type">{this.props.isDog ? this.props.rootData.dogfood : this.props.rootData.catfood}</div>
         <div>{this.props.rootData.filter}</div>
         <div className="filter-list" >
           <div className="product-filter-item" onClick={this.props.clearFilters}>{this.props.rootData.allproducts}</div>
