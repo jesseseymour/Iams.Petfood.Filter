@@ -1,3 +1,3 @@
 #!/bin/bash
 webpack -p --config webpack.prod.js
-cp ./dist/assets/bundle.min.js ../Nutro.Web/App_Data/Sitefinity/WebsiteTemplates/Base_Template/App_Themes/WildFrontier/dist/js/bundle.min.js
+cp ./dist/assets/bundle.min.js ../SitefinityWebApp/Content/WildFrontier/js/bundle.min.js
