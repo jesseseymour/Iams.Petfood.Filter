@@ -18,6 +18,12 @@ module.exports = merge(common, {
                 secure: false,
                 logLevel: 'debug',
                 changeOrigin: true
+            },
+            "/images/**": {
+                target: "http://localhost:49586",
+                secure: false,
+                logLevel: 'error',
+                changeOrigin: true
             }
         }
     }

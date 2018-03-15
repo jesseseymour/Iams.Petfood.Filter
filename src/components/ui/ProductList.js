@@ -30,10 +30,9 @@ class ProductList extends Component {
                       Filters: [] 
                     }
 
-    fetch('/api/GetProductsByFilter',
+    fetch('/api/Products/Index?department=' + this.props.rootData.department.urlName,
           {
-            method: 'POST',
-            body: JSON.stringify(payload),
+            method: 'GET',
             headers: {
               'Accept': 'application/json, text/plain, */*',
               'Content-Type': 'application/json'
@@ -152,10 +151,10 @@ class ProductList extends Component {
             slicedProducts.map(
               (product, i) => 
                 <Product key={i}
-                         name={product.FullTitle}
-                         thumbnail={product.ImagePath}
+                         name={product.Title}
+                         thumbnail={product.Image.ThumbnailUrl}
                          link={this.props.rootData.baseUrl + "/" + product.UrlName}
-                         bvID={product.BazzarVoiceId}
+                         bvID={product.BazaarVoiceId}
                          psID={product.PriceSpiderId} />
 
             )
