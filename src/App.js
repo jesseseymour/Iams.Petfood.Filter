@@ -7,17 +7,15 @@ import { BrowserRouter as Router } from 'react-router-dom'
 class App extends Component {
   constructor(props){
     super(props)
-    this.state = {
-      isDog: window.location.pathname.substr(1).split('/')[0].indexOf('dog') >= 0 ? true : false
-    }
   }
 
   render() {
+    var rootData = JSON.parse(document.getElementById('react-container').dataset.root);
     return (
       <Router>
       <div className="NutroProductFilter">
-        <ProductFilters isDog={this.state.isDog} rootData={document.getElementById('react-container').dataset} />
-        <ProductList isDog={this.state.isDog} rootData={document.getElementById('react-container').dataset} />
+        <ProductFilters rootData={rootData} />
+        <ProductList rootData={rootData} />
         </div>
       </Router>
     )
