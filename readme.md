@@ -1,4 +1,4 @@
-# WildFronteir.Petfood.Filter
+# WildFrontier.Petfood.Filter
 
 This is a ReactJS based site used in the Wild Frontier web site. This repo has the source code and tools
 to make it easy
