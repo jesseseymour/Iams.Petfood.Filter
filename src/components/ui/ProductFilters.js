@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 
 
 //individual product filter component
-const ProductFilter = ({ id, name, active, parent, children, toggleFilter, dataStr }) => 
+const ProductFilter = ({ id, name, active, parent, children, toggleFilter, dataStr, urlname }) => 
   <div className="product-filter-item" 
     key={ Date.now() }
     id={ id }
@@ -24,8 +24,6 @@ class ProductFilters extends Component {
     this.state = {
       availableFilters: []
     }
-    this.path = window.location.pathname.substr(1).split('/') //convert path to array and remove first empty item
-    this.base = this.path[0] //use first item as base (natural-cat-food or natural-dog-food)
   }
   
   //fetch filter data from json. this should be changed to fetch from the webservice when moved to client app
@@ -41,6 +39,7 @@ class ProductFilters extends Component {
       .then(response => response.json())
       .then(availableFilters => this.setState({ availableFilters }))
       .then(() => this.checkURLForFilters())
+
   }
 
   componentWillReceiveProps(nextProps){
@@ -66,13 +65,13 @@ class ProductFilters extends Component {
     }
   }
 
-  //set filters on page load if any found in the url path
+
   //set filters on page load if any found in the url path
   setFilters({ filterArr, availableFilters = this.state.availableFilters, results = [] } = {}) {
     function searchFilterArray(filter, parent, availableFilters) {
       availableFilters.map((node, i) => {
         if (filter === node.Title.toLowerCase().replace(/[^0-9a-zA-Z]+/g, "-")) { //replace special characters with hyphen
-          results.push({ name: node.Title.toLowerCase(), id: node.UrlName, parent: parent })
+          results.push({ name: node.Title.toLowerCase(), id: node.Id, parent: parent, urlname: node.UrlName })
         }
         if (node.Children.length) searchFilterArray(filter, parent, node.Children) //run function again if children found in object
       })
@@ -92,8 +91,8 @@ class ProductFilters extends Component {
     let activeFiltersObj = {}
     let filterStr = '?'
     activeFilters.map(filter => {
-      let parent = filter.parent
-      activeFiltersObj[parent] ? activeFiltersObj[parent].push(filter.id) : activeFiltersObj[parent] = [filter.id]
+      let parent = this.getFilterUrlnameById(filter.parent)
+      activeFiltersObj[parent] ? activeFiltersObj[parent].push(filter.urlname) : activeFiltersObj[parent] = [filter.urlname]
 
     })
 
@@ -105,8 +104,25 @@ class ProductFilters extends Component {
     this.props.history.replace({search: filterStr})
   }
 
-  handleFilterClick(name,id,parent) {
-    this.props.toggleFilter(name.toLowerCase(),id,parent)
+  getFilterUrlnameById(id){
+    const filter = this.findFilterById(id,this.state.availableFilters)
+    return filter.UrlName
+  }
+
+  findFilterById(id, availableFilters = this.state.availableFilters) {
+    const match = availableFilters.filter(node => node.Id === id)
+    
+    if(match.length){
+      return match[0]
+    } else{ 
+      availableFilters.map(node => {
+        this.findFilterById(id,node.Children)
+      })
+    }
+  }
+
+  handleFilterClick(name,id,parent,urlname) {
+    this.props.toggleFilter(name.toLowerCase(),id,parent,urlname)
   }
 
   listFilters({array=this.state.availableFilters, depth=0, parent=null, render=true} = {}) { 
@@ -114,16 +130,17 @@ class ProductFilters extends Component {
       return <ProductFilter key={i}
                             name={node.Title}
                             numChildren={node.Children.length}
-                            active={this.props.activeFilters.some(filter => filter.id === node.UrlName)} //search map in list of active filters
+                            active={this.props.activeFilters.some(filter => filter.id === node.Id)} //search map in list of active filters
                             parent={parent}
-                            id={node.UrlName}
+                            id={node.Id}
+                            urlname={node.UrlName}
                             depth={depth}
-                            toggleFilter={(e) => this.handleFilterClick(node.Title, node.UrlName, parent)}
+                            toggleFilter={(e) => this.handleFilterClick(node.Title, node.Id, parent, node.UrlName)}
                             dataStr={parent ? "data-toggle='collapse' data-target=`${node.UrlName}-children`" : null}>
                               { this.listFilters
                                 ({array:node.Children,
                                   depth:depth+1,
-                                  parent:node.UrlName
+                                  parent:node.Id
                                 })}
              </ProductFilter>
       }))
