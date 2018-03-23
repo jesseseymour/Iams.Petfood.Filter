@@ -1,12 +1,13 @@
 import C from './constants'
 
-export function toggleFilter(name,id,parent) {
+export function toggleFilter(name,id,parent,urlname) {
   return {
     type: C.TOGGLE_FILTER,
     payload: {
       name,
       id,
-      parent
+      parent,
+      urlname
     }
   }
 }
