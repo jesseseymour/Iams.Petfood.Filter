@@ -71,7 +71,7 @@ class ProductFilters extends Component {
     function searchFilterArray(filter, parent, availableFilters) {
       availableFilters.map((node, i) => {
         if (filter === node.Title.toLowerCase().replace(/[^0-9a-zA-Z]+/g, "-")) { //replace special characters with hyphen
-          results.push({ name: node.Title.toLowerCase(), id: node.Id, parent: parent, urlname: node.UrlName })
+          results.push({ name: node.Title.toLowerCase(), id: node.Id, parent: node.ParentId, urlname: node.UrlName })
         }
         if (node.Children.length) searchFilterArray(filter, parent, node.Children) //run function again if children found in object
       })
