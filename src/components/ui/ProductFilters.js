@@ -4,17 +4,17 @@ import { withRouter } from 'react-router-dom'
 
 
 //individual product filter component
-const ProductFilter = ({ id, name, active, parent, children, toggleFilter, dataStr, urlname }) => 
+const ProductFilter = ({ id, name, active, parent, children, toggleFilter, dataStr, urlname, collapseChildren, collapsed }) => 
   <div className="product-filter-item" 
     key={ Date.now() }
     id={ id }
     data-active={active}
     data-parent={ (parent) ? parent : null } /*set data-parent to parent list item's id*/ >
-      <span onClick={ (parent) ? (e) => toggleFilter(name, id) : null /*if item has a parent, bind toggleFilter handler*/ } 
+      <span onClick={ (parent) ? (e) => toggleFilter(name, id) : (e) => collapseChildren(e,id) /*if item has a parent, bind toggleFilter handler*/ } 
         /* {dataStr} */>
         { name }
       </span>
-    <div className="children" id={ `${id}-children`}>{ children }</div>
+    {children ? (<div className={`children collapse ${collapsed}`} id={ `${id}-children`}>{ children }</div>) : null}
   </div>
 
 
@@ -22,7 +22,9 @@ class ProductFilters extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      availableFilters: []
+      availableFilters: [],
+      openParents: [],
+      isCollapsed: true
     }
   }
   
@@ -39,7 +41,6 @@ class ProductFilters extends Component {
       .then(response => response.json())
       .then(availableFilters => this.setState({ availableFilters }))
       .then(() => this.checkURLForFilters())
-
   }
 
   componentWillReceiveProps(nextProps){
@@ -125,7 +126,19 @@ class ProductFilters extends Component {
     this.props.toggleFilter(name.toLowerCase(),id,parent,urlname)
   }
 
+  collapseChildren(e,id) {
+    if (window.jQuery){
+      $(e.currentTarget.nextSibling).collapse('toggle')
+      let openParents = this.state.openParents
+      openParents.indexOf(id) >= 0 ? openParents.splice(openParents.indexOf(id),1) : openParents.push(id)
+      this.setState({
+        openParents
+      })
+    }
+  }
+
   listFilters({array=this.state.availableFilters, depth=0, parent=null, render=true} = {}) { 
+    if (!array) return false
     return (array.map((node, i) => {
       return <ProductFilter key={i}
                             name={node.Title}
@@ -136,12 +149,11 @@ class ProductFilters extends Component {
                             urlname={node.UrlName}
                             depth={depth}
                             toggleFilter={(e) => this.handleFilterClick(node.Title, node.Id, parent, node.UrlName)}
-                            dataStr={parent ? "data-toggle='collapse' data-target=`${node.UrlName}-children`" : null}>
-                              { this.listFilters
-                                ({array:node.Children,
-                                  depth:depth+1,
-                                  parent:node.Id
-                                })}
+                            collapseChildren={(e) => this.collapseChildren(e,node.Id)}
+                            collapsed={this.state.openParents.includes(node.Id) ? "in" : ""}
+                            //dataStr={parent ? "data-toggle='collapse' data-target=`${node.UrlName}-children`" : null}
+                            >
+                              { node.Children.length ? this.listFilters ({array:node.Children, depth:depth+1, parent:node.Id }) : null }
              </ProductFilter>
       }))
   }
@@ -167,11 +179,12 @@ class ProductFilters extends Component {
   }
 
   render() {
+    const collapsed = this.state.isCollapsed ? "" : "in"
     return (
       <div className="filter-container">
         <div className="product-type">{this.props.rootData.department.title}</div>
-        <div>{this.props.rootData.labels.filter}</div>
-        <div className="filter-list" >
+        <div onClick={() => this.setState({ isCollapsed: !this.state.isCollapsed })}>{this.props.rootData.labels.filter}</div>
+        <div className={`filter-list collapse ${collapsed}`} >
           <div className="product-filter-item" onClick={this.props.clearFilters}>{this.props.rootData.labels.allproducts}</div>
           {this.listFilters()} 
           <div className="active-filters">{this.renderActiveFilters(this.props.activeFilters)}</div>
