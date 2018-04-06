@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 
 //individual product filter component
 const ProductFilter = ({ id, name, active, parent, children, toggleFilter, dataStr, urlname, collapseChildren, collapsed }) => 
-  <div className="product-filter-item" 
+  <div className={collapsed === "in" ? "product-filter-item" : "product-filter-item is-collapsed"}
     key={ Date.now() }
     id={ id }
     data-active={active}
@@ -183,7 +183,8 @@ class ProductFilters extends Component {
     return (
       <div className="filter-container">
         <div className="product-type">{this.props.rootData.department.title}</div>
-        <div onClick={() => this.setState({ isCollapsed: !this.state.isCollapsed })}>{this.props.rootData.labels.filter}</div>
+        <div onClick={() => this.setState({ isCollapsed: !this.state.isCollapsed })}
+             className={this.state.isCollapsed ? "is-collapsed": ""}>{this.props.rootData.labels.filter}</div>
         <div className={`filter-list collapse ${collapsed}`} >
           <div className="product-filter-item" onClick={this.props.clearFilters}>{this.props.rootData.labels.allproducts}</div>
           {this.listFilters()} 

@@ -9,7 +9,7 @@ module.exports = merge(common, {
         inline: true,
         contentBase: './dist',
         historyApiFallback: true,
-        port: 3000,
+        port: 3002,
         hot: true,
         hotOnly: true,
         proxy: {
