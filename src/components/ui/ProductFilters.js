@@ -4,8 +4,8 @@ import { withRouter } from 'react-router-dom'
 
 
 //individual product filter component
-const ProductFilter = ({ id, name, active, parent, children, toggleFilter, dataStr, urlname, collapseChildren, collapsed }) => 
-  <div className={collapsed === "in" ? "product-filter-item" : "product-filter-item is-collapsed"}
+const ProductFilter = ({ id, name, active, parent, children, toggleFilter, dataStr, urlname, collapseChildren, collapsed, childrenClass }) => 
+  <div className={collapsed === "in" ? `product-filter-item ${childrenClass}` : `product-filter-item is-collapsed ${childrenClass}`}
     key={ Date.now() }
     id={ id }
     data-active={active}
@@ -151,6 +151,7 @@ class ProductFilters extends Component {
                             toggleFilter={(e) => this.handleFilterClick(node.Title, node.Id, parent, node.UrlName)}
                             collapseChildren={(e) => this.collapseChildren(e,node.Id)}
                             collapsed={this.state.openParents.includes(node.Id) ? "in" : ""}
+                            childrenClass={node.Children.length ? "has-children" : ""}
                             //dataStr={parent ? "data-toggle='collapse' data-target=`${node.UrlName}-children`" : null}
                             >
                               { node.Children.length ? this.listFilters ({array:node.Children, depth:depth+1, parent:node.Id }) : null }
