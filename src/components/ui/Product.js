@@ -1,11 +1,11 @@
 const Product = ({ name, subtitle, thumbnail, bvID, link, psID }) =>
   <div className="product">
     <a href={link}>
-      <h3>{name}</h3>
-      <h4>{subtitle}</h4>
-      <img src={thumbnail} />
-      <div>{bvID}</div>
-      <div>{psID}</div>
+      <div className="img-container"><img src={thumbnail} /></div>
+      <div className="bv-container" bid={`BVVRInlineRating-${bvID}`}></div>
+      <h2>{name}</h2>
+      <h3>{subtitle}</h3>
+      {/* <div>{psID}</div> */}
     </a>
   </div>
 

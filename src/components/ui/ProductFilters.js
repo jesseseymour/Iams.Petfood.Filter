@@ -183,7 +183,7 @@ class ProductFilters extends Component {
     const collapsed = this.state.isCollapsed ? "" : "in"
     return (
       <div className="filter-container">
-        <div className="product-type">{this.props.rootData.department.title}</div>
+        <div className="product-type"><h1>{this.props.rootData.department.title}</h1></div>
         <div onClick={() => this.setState({ isCollapsed: !this.state.isCollapsed })}
              className={this.state.isCollapsed ? "is-collapsed": ""}>{this.props.rootData.labels.filter}</div>
         <div className={`filter-list collapse ${collapsed}`} >

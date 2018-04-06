@@ -168,7 +168,8 @@ class ProductList extends Component {
 }
 
 ProductList.defaultProps = {
-  perPage: 8 //number of products to show per page
+  //perPage: 8 //number of products to show per page
+  perPage: 100
 }
 
 export default ProductList
