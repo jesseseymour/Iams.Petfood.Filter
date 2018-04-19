@@ -96,17 +96,14 @@ class ProductList extends Component {
   //test to determine if product matches filters
   shouldProductRender(product,nextFilters=null) {
     const productFilters = product.Departments //use departments array from product object
-    let match = false //default to false. will change to true if test passes
     
-
-    if (this.activeFilterIds.length) { //test if all active filter ids are inluded in product id array
-      this.activeFilterIds
-            .every(filter => productFilters.includes(filter)) ? match = true : null
-
-      return match 
+    //test if all active filter ids are inluded in product id array
+    if (this.activeFilterIds.length) { 
+      return productFilters.some(r => this.activeFilterIds.includes(r))
     }
     else {
-      return true //return true if no filters selected. this will render all products
+      //return true if no filters selected. this will render all products
+      return true 
     }
   }
 
