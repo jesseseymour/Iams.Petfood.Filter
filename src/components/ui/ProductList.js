@@ -71,6 +71,10 @@ class ProductList extends Component {
     })
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    this.updateInlineRatings()
+  }
+
   //return array of active filter ids
   getActiveFilterIds(activeFilters){
     return activeFilters.map(activeFilter => (activeFilter.id))
@@ -128,40 +132,54 @@ class ProductList extends Component {
     })
   }
 
+  updateInlineRatings = () => {
+    let idArr = this.state.filteredProducts.map(product => product.BazaarvoiceId)
+    if (idArr.length && typeof $BV !== 'undefined'){
+      $BV.ui('rr', 'inline_ratings', {
+        productIds: idArr,
+        containerPrefix: 'BVRRInlineRating'
+      });
+    }
+  }
+
   render() {
     const { filteredProducts } = this.state
     const slicedProducts = this.getSlicedProductList(filteredProducts,this.state.offset)
 
     return (
       <div className="product-list">
-        <h1>{filteredProducts.length} {this.props.rootData.labels.productsfound}</h1>
+        <h1>{this.state.loading ? this.props.rootData.labels.loadingproducts + "..." : filteredProducts.length + " " + this.props.rootData.labels.productsfound}</h1>
         <ReactPaginate pageCount={Math.ceil(filteredProducts.length / this.props.perPage)}
-                       pageRangeDisplayed={5}
-                       marginPagesDisplayed={1}
-                       nextLabel={this.props.rootData.labels.next}
-                       previousLabel={this.props.rootData.labels.previous}
-                       containerClassName={"pagination"}
-                       onPageChange={this.handlePageClick}
-                       forcePage={this.state.currentPage} />
+                      pageRangeDisplayed={5}
+                      marginPagesDisplayed={1}
+                      nextLabel={this.props.rootData.labels.next}
+                      previousLabel={this.props.rootData.labels.previous}
+                      containerClassName={"pagination"}
+                      onPageChange={this.handlePageClick}
+                      forcePage={this.state.currentPage} />
         {
-          (slicedProducts.length) ?
+          this.state.loading ? (<i className="loading animate-spin icon-spin5"></i>) : null
+        }
+        {
+          (slicedProducts.length && !this.state.loading) ?
             slicedProducts.map(
               (product, i) => 
                 <Product key={i}
-                         name={product.Title}
-                         subtitle={product.Subtitle}
-                         thumbnail={product.Image.ThumbnailUrl}
-                         link={this.props.rootData.baseUrl + "/" + product.UrlName}
-                         bvID={product.BazaarVoiceId}
-                         psID={product.PriceSpiderId} />
+                        name={product.Title}
+                        subtitle={product.Subtitle}
+                        thumbnail={product.Image.ThumbnailUrl}
+                        link={this.props.rootData.baseUrl + "/" + product.UrlName}
+                        bvID={product.BazaarvoiceId}
+                        psID={product.PriceSpiderId} />
 
             )
           :
-            <span>Currently 0 Products</span>
+            null
         }
       </div>
     )
   }
+  
 }
 
 ProductList.defaultProps = {
