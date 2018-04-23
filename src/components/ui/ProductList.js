@@ -15,7 +15,7 @@ class ProductList extends Component {
     }
 
     //this will be used to store active filter IDs
-    this.activeFilterIds = []
+    this.activeFilterObjects = []
   }
 
 
@@ -52,7 +52,7 @@ class ProductList extends Component {
     ********************/
 
     //update local array of active filter IDs
-    this.activeFilterIds = this.getActiveFilterIds(this.props.activeFilters)
+    this.activeFilterObjects = this.getActiveFilterIds(this.props.activeFilters)
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -61,7 +61,7 @@ class ProductList extends Component {
 
   componentWillReceiveProps(nextProps) {
     //update local array of active filter IDs
-    this.activeFilterIds = this.getActiveFilterIds(nextProps.activeFilters)
+    this.activeFilterObjects = this.getActiveFilterIds(nextProps.activeFilters)
 
     //get array of filtered products and set state with updated list
     this.setState({
@@ -71,13 +71,13 @@ class ProductList extends Component {
     })
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    this.updateInlineRatings()
-  }
-
   //return array of active filter ids
   getActiveFilterIds(activeFilters){
-    return activeFilters.map(activeFilter => (activeFilter.id))
+    return activeFilters.map(activeFilter => ({
+      "id": activeFilter.id,
+      "parent": activeFilter.parent,
+      "name": activeFilter.name
+    }))
   }
 
   //update product array based on selected filters
@@ -101,9 +101,25 @@ class ProductList extends Component {
   shouldProductRender(product,nextFilters=null) {
     const productFilters = product.Departments //use departments array from product object
     
-    //test if all active filter ids are inluded in product id array
-    if (this.activeFilterIds.length) { 
-      return productFilters.some(r => this.activeFilterIds.includes(r))
+    let activeGroups = [...new Set(this.activeFilterObjects.map(filter => filter.parent))]
+    let activeFilters = this.activeFilterObjects
+
+    //create object tree of active filters so we can filter exclusively by parent groups
+    let activeFilterTree = activeGroups.map(function(group){
+      return {
+        "parent": group,
+        "children": activeFilters.filter(filter => filter.parent === group)
+      }
+    })
+
+    //return true if product has department id included in each active filter group
+    if (this.activeFilterObjects.length) {
+      let matchArr = activeFilterTree.map(function(group){
+        return productFilters.some(r => group.children.map(child => child.id).includes(r))
+      })
+      
+      if (matchArr.indexOf(false) < 0) return true
+      
     }
     else {
       //return true if no filters selected. this will render all products
@@ -130,16 +146,6 @@ class ProductList extends Component {
       offset: offset,
       currentPage: Math.floor(offset / this.props.perPage)
     })
-  }
-
-  updateInlineRatings = () => {
-    let idArr = this.state.filteredProducts.map(product => product.BazaarvoiceId)
-    if (idArr.length && typeof $BV !== 'undefined'){
-      $BV.ui('rr', 'inline_ratings', {
-        productIds: idArr,
-        containerPrefix: 'BVRRInlineRating'
-      });
-    }
   }
 
   render() {
