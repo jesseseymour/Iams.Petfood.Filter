@@ -12,19 +12,11 @@ module.exports = merge(common, {
         port: 3002,
         hot: true,
         hotOnly: true,
-        proxy: {
-            "/api/**": {
-                target: "http://localhost:49586",
-                secure: false,
-                logLevel: 'debug',
-                changeOrigin: true
-            },
-            "/images/**": {
-                target: "http://localhost:49586",
-                secure: false,
-                logLevel: 'error',
-                changeOrigin: true
-            }
-        }
+        proxy: [{
+            context: ["/api", "/Content", "/Sitefinity", "/images"],
+            target: "http://localhost:51879",
+            secure: false,
+            changeOrigin: true
+        }]
     }
 });

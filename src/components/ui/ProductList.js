@@ -64,11 +64,19 @@ class ProductList extends Component {
     this.activeFilterObjects = this.getActiveFilterIds(nextProps.activeFilters)
 
     //get array of filtered products and set state with updated list
+    let filteredProducts = this.updateProductList(null, nextProps.activeFilters)
+
+    //send product count to parent before setting state
+    this.props.sendProductCount(filteredProducts.length)
+
+    //set state with new list of products
     this.setState({
-      filteredProducts: this.updateProductList(null,nextProps.activeFilters),
+      filteredProducts: filteredProducts,
       offset: 0,
       currentPage: 0
     })
+
+    
   }
 
   //return array of active filter ids
@@ -93,7 +101,7 @@ class ProductList extends Component {
         (this.shouldProductRender(product,nextFilters)) ? filteredProducts.push(product) : null
       }
     )
-
+    
     return filteredProducts
   }
 
@@ -151,18 +159,19 @@ class ProductList extends Component {
   render() {
     const { filteredProducts } = this.state
     const slicedProducts = this.getSlicedProductList(filteredProducts,this.state.offset)
-
+    const loading = this.state.loading ? (<div className="loading">{this.props.rootData.labels.loadingproducts}...</div>) : null
     return (
+    
       <div className="product-list">
-        <h1>{this.state.loading ? this.props.rootData.labels.loadingproducts + "..." : filteredProducts.length + " " + this.props.rootData.labels.productsfound}</h1>
-        <ReactPaginate pageCount={Math.ceil(filteredProducts.length / this.props.perPage)}
+        {loading}
+        {/* <ReactPaginate pageCount={Math.ceil(filteredProducts.length / this.props.perPage)}
                       pageRangeDisplayed={5}
                       marginPagesDisplayed={1}
                       nextLabel={this.props.rootData.labels.next}
                       previousLabel={this.props.rootData.labels.previous}
                       containerClassName={"pagination"}
                       onPageChange={this.handlePageClick}
-                      forcePage={this.state.currentPage} />
+                      forcePage={this.state.currentPage} /> */}
         {
           this.state.loading ? (<i className="loading animate-spin icon-spin5"></i>) : null
         }
@@ -172,9 +181,9 @@ class ProductList extends Component {
               (product, i) => 
                 <Product key={i}
                         name={product.Title}
-                        subtitle={product.Subtitle}
+                        formula={product.Formula}
                         thumbnail={product.Image.ThumbnailUrl}
-                        link={this.props.rootData.baseUrl + "/" + product.UrlName}
+                        link={this.props.rootData.baseUrl + "/" + product.FullUrl}
                         bvID={product.BazaarvoiceId}
                         psID={product.PriceSpiderId} />
 

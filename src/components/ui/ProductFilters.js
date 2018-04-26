@@ -1,21 +1,8 @@
 import { Component } from 'react'
 import fetch from 'isomorphic-fetch'
 import { withRouter } from 'react-router-dom'
-
-
-//individual product filter component
-const ProductFilter = ({ id, name, active, parent, children, toggleFilter, dataStr, urlname, collapseChildren, collapsed, childrenClass }) => 
-  <div className={collapsed === "in" ? `product-filter-item ${childrenClass}` : `product-filter-item is-collapsed ${childrenClass}`}
-    key={ Date.now() }
-    id={ id }
-    data-active={active}
-    data-parent={ (parent) ? parent : null } /*set data-parent to parent list item's id*/ >
-      <span onClick={ (parent) ? (e) => toggleFilter(name, id) : (e) => collapseChildren(e,id) /*if item has a parent, bind toggleFilter handler*/ } 
-        /* {dataStr} */>
-        { name }
-      </span>
-    {children ? (<div className={`children collapse ${collapsed}`} id={ `${id}-children`}>{ children }</div>) : null}
-  </div>
+import ProductFilter from './ProductFilter'
+import { PanelGroup, Panel, Button } from 'react-bootstrap'
 
 
 class ProductFilters extends Component {
@@ -23,8 +10,7 @@ class ProductFilters extends Component {
     super(props)
     this.state = {
       availableFilters: [],
-      openParents: [],
-      isCollapsed: true
+      open: false
     }
   }
   
@@ -92,8 +78,8 @@ class ProductFilters extends Component {
     let activeFiltersObj = {}
     let filterStr = '?'
     activeFilters.map(filter => {
-      let parent = this.getFilterUrlnameById(filter.parent)
-      activeFiltersObj[parent] ? activeFiltersObj[parent].push(filter.urlname) : activeFiltersObj[parent] = [filter.urlname]
+      let parent = this.getFilterUrlnameById(filter.parent).split('/').pop()
+      activeFiltersObj[parent] ? activeFiltersObj[parent].push(filter.urlname.split('/').pop()) : activeFiltersObj[parent] = [filter.urlname.split('/').pop()]
 
     })
 
@@ -126,22 +112,12 @@ class ProductFilters extends Component {
     this.props.toggleFilter(name.toLowerCase(),id,parent,urlname)
   }
 
-  collapseChildren(e,id) {
-    if (window.jQuery){
-      $(e.currentTarget.nextSibling).collapse('toggle')
-      let openParents = this.state.openParents
-      openParents.indexOf(id) >= 0 ? openParents.splice(openParents.indexOf(id),1) : openParents.push(id)
-      this.setState({
-        openParents
-      })
-    }
-  }
-
   listFilters({array=this.state.availableFilters, depth=0, parent=null, render=true} = {}) { 
     if (!array) return false
     return (array.map((node, i) => {
       return <ProductFilter key={i}
                             name={node.Title}
+                            subtext={node.Description}
                             numChildren={node.Children.length}
                             active={this.props.activeFilters.some(filter => filter.id === node.Id)} //search map in list of active filters
                             parent={parent}
@@ -149,9 +125,9 @@ class ProductFilters extends Component {
                             urlname={node.UrlName}
                             depth={depth}
                             toggleFilter={(e) => this.handleFilterClick(node.Title, node.Id, parent, node.UrlName)}
-                            collapseChildren={(e) => this.collapseChildren(e,node.Id)}
-                            collapsed={this.state.openParents.includes(node.Id) ? "in" : ""}
                             childrenClass={node.Children.length ? "has-children" : ""}
+                            activeFilters={this.props.activeFilters}
+                            images={[node.ImageActive.ThumbnailUrl,node.ImageInactive.ThumbnailUrl]}
                             //dataStr={parent ? "data-toggle='collapse' data-target=`${node.UrlName}-children`" : null}
                             >
                               { node.Children.length ? this.listFilters ({array:node.Children, depth:depth+1, parent:node.Id }) : null }
@@ -161,35 +137,52 @@ class ProductFilters extends Component {
   
   //list active filters below filter nav and bind toggleFilter click event
   renderActiveFilters(array) { 
-    return (array.length) ?
-      <div>
-        <span className="clear-filters"
-              onClick={this.props.clearFilters}>
-                {this.props.rootData.labels.clearfilters}
-        </span>
-        {
-          array.map((node, i) => {
-            return <span className="active-filter" 
-                         onClick={(e) => this.handleFilterClick(node.name.toLowerCase(), node.id)}
-                         key={Date.now() + i}>
-                       {node.name} 
-                   </span>
-        })}
-      </div> :
-      <span className="active-filter">{this.props.rootData.labels.noactivefilters}</span>
-  }
-
-  render() {
-    const collapsed = this.state.isCollapsed ? "" : "in"
+    let separater = array.length == 2 ? " & " : array.length > 2 ? ", " : ""
     return (
-      <div className="filter-container">
-        <div className="product-type"><h1>{this.props.rootData.department.title}</h1></div>
-        <div onClick={() => this.setState({ isCollapsed: !this.state.isCollapsed })}
-             className={this.state.isCollapsed ? "is-collapsed": ""}>{this.props.rootData.labels.filter}</div>
-        <div className={`filter-list collapse ${collapsed}`} >
-          <div className="product-filter-item" onClick={this.props.clearFilters}>{this.props.rootData.labels.allproducts}</div>
-          {this.listFilters()} 
-          <div className="active-filters">{this.renderActiveFilters(this.props.activeFilters)}</div>
+        array.map((node, i) => {
+          return (
+            <span className="active-filter" 
+                  onClick={(e) => this.handleFilterClick(node.name.toLowerCase(), node.id)}
+                  key={Date.now() + i}>
+              {node.name}
+              <span>{i < array.length - 1 ? separater : null}</span>
+            </span>
+            
+          )
+      })
+    )
+  }
+  
+  render() {
+    return (
+      <div className="filters">
+        <Panel id="FilterContainer" expanded={this.state.open}>
+          <Panel.Collapse>
+            <Panel.Body className="filter-panel-body">
+              <div className="filter-container">
+                <div className="close" onClick={() => this.setState({ open: false })}>&#x2715;</div>
+                <div className="filters-list">{this.props.rootData.labels.filter}: {this.renderActiveFilters(this.props.activeFilters)}</div>
+                <PanelGroup accordion className="filter-list" id="filterPanelGroup">
+                    <div className="product-filter-item hidden-xs hidden-sm" onClick={this.props.clearFilters}><span>{this.props.rootData.labels.allproducts}</span></div>
+                    {this.listFilters()}
+                  </PanelGroup>
+                  <div className="bottom">
+                    <span className="clear-filters" onClick={this.props.clearFilters}>{this.props.activeFilters.length ? (this.props.rootData.labels.clearfilters + " (" + this.props.activeFilters.length) + ")" : null}</span>          
+                    <Button className="see-products" onClick={() => this.setState({open: !this.state.open})}>
+                      See {this.props.productCount} Product{this.props.productCount === 1 ? "" : "s"}
+                    </Button>
+                  </div>
+              </div>
+            </Panel.Body>
+          </Panel.Collapse>
+        </Panel>
+        <Button className="show-filters" onClick={() => this.setState({ open: !this.state.open })}>
+          {this.props.rootData.labels.filtertogglebutton}
+        </Button>
+        <div className="selected-clear">
+          {this.props.activeFilters.length ? <div className="filters-list">Selected: {this.renderActiveFilters(this.props.activeFilters)}</div> : null}
+          <span className="clear-filters hidden-lg hidden-md" onClick={this.props.clearFilters}>{this.props.activeFilters.length ? (this.props.rootData.labels.clearfilters + " (" + this.props.activeFilters.length) + ")" : null}</span>
+          <span className="clear-filters hidden-sm hidden-xs" onClick={this.props.clearFilters}>{this.props.activeFilters.length ? "Reset Filters" : null}</span>
         </div>
       </div>
     )

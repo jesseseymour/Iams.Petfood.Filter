@@ -36,6 +36,7 @@
     "babel-polyfill": "^6.26.0",
     "isomorphic-fetch": "^2.2.1",
     "react": "15.3.2",
+    "react-bootstrap": "^0.32.1",
     "react-dom": "15.3.2",
     "react-paginate": "^5.0.0",
     "react-redux": "^5.0.6",
