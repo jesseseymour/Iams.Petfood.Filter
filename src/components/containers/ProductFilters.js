@@ -5,7 +5,8 @@ import { withRouter } from 'react-router-dom'
 
 const mapStateToProps = (state) => {
   return {
-    activeFilters: state.activeFilters
+    activeFilters: state.activeFilters,
+    productCount: state.productCount
   }
 }
 

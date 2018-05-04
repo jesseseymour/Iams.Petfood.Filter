@@ -20,6 +20,9 @@ export const activeFilters = (state=[], action) => {
       return state
   }
 }
+export const productCount = (state=[], action) => {
+  return action.type === C.PRODUCT_COUNT ? action.payload.productCount : state
+}
 
 export const errors = (state=[], action) => {
   switch(action.type) {
@@ -37,5 +40,6 @@ export const errors = (state=[], action) => {
 
 export default combineReducers({
   activeFilters,
+  productCount,
   errors
 })

@@ -128,6 +128,7 @@ class ProductFilters extends Component {
                             childrenClass={node.Children.length ? "has-children" : ""}
                             activeFilters={this.props.activeFilters}
                             images={[node.ImageActive.ThumbnailUrl,node.ImageInactive.ThumbnailUrl]}
+                            catOrDog={this.props.rootData.department.urlName}
                             //dataStr={parent ? "data-toggle='collapse' data-target=`${node.UrlName}-children`" : null}
                             >
                               { node.Children.length ? this.listFilters ({array:node.Children, depth:depth+1, parent:node.Id }) : null }
@@ -163,12 +164,12 @@ class ProductFilters extends Component {
                 <div className="close" onClick={() => this.setState({ open: false })}>&#x2715;</div>
                 <div className="filters-list">{this.props.rootData.labels.filter}: {this.renderActiveFilters(this.props.activeFilters)}</div>
                 <PanelGroup accordion className="filter-list" id="filterPanelGroup">
-                    <div className="product-filter-item hidden-xs hidden-sm" onClick={this.props.clearFilters}><span>{this.props.rootData.labels.allproducts}</span></div>
+                  <div className="product-filter-item hidden-xs hidden-sm" onClick={this.props.clearFilters}><span className={this.props.rootData.department.urlName}>{this.props.rootData.labels.allproducts}</span></div>
                     {this.listFilters()}
                   </PanelGroup>
                   <div className="bottom">
-                    <span className="clear-filters" onClick={this.props.clearFilters}>{this.props.activeFilters.length ? (this.props.rootData.labels.clearfilters + " (" + this.props.activeFilters.length) + ")" : null}</span>          
-                    <Button className="see-products" onClick={() => this.setState({open: !this.state.open})}>
+                    <span className={`clear-filters ${this.props.rootData.department.urlName}`} onClick={this.props.clearFilters}>{this.props.activeFilters.length ? (this.props.rootData.labels.clearfilters + " (" + this.props.activeFilters.length) + ")" : null}</span>          
+                  <Button className={`see-products ${this.props.rootData.department.urlName}`} onClick={() => this.setState({open: !this.state.open})}>
                       See {this.props.productCount} Product{this.props.productCount === 1 ? "" : "s"}
                     </Button>
                   </div>
@@ -181,8 +182,8 @@ class ProductFilters extends Component {
         </Button>
         <div className="selected-clear">
           {this.props.activeFilters.length ? <div className="filters-list">Selected: {this.renderActiveFilters(this.props.activeFilters)}</div> : null}
-          <span className="clear-filters hidden-lg hidden-md" onClick={this.props.clearFilters}>{this.props.activeFilters.length ? (this.props.rootData.labels.clearfilters + " (" + this.props.activeFilters.length) + ")" : null}</span>
-          <span className="clear-filters hidden-sm hidden-xs" onClick={this.props.clearFilters}>{this.props.activeFilters.length ? "Reset Filters" : null}</span>
+          <span className={`clear-filters hidden-lg hidden-md ${this.props.rootData.department.urlName}`} onClick={this.props.clearFilters}>{this.props.activeFilters.length ? (this.props.rootData.labels.clearfilters + " (" + this.props.activeFilters.length) + ")" : null}</span>
+          <span className={`clear-filters hidden-sm hidden-xs ${this.props.rootData.department.urlName}`} onClick={this.props.clearFilters}>{this.props.activeFilters.length ? "Reset Filters" : null}</span>
         </div>
       </div>
     )

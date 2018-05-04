@@ -26,3 +26,12 @@ export function clearFilters() {
     type: C.CLEAR_FILTERS
   }
 }
+
+export function setProductCount(count){
+  return {
+    type: C.PRODUCT_COUNT,
+    payload: {
+      productCount: count
+    }
+  }
+}

@@ -46,6 +46,7 @@ class ProductList extends Component {
                 loading: false,
                 filteredProducts: this.updateProductList(products)
             }))
+            .then(() => this.props.setProductCount(this.state.filteredProducts.length))
             .catch(err => console.error(err))
     /********************
     end set payload and call api for available products
@@ -64,10 +65,9 @@ class ProductList extends Component {
     this.activeFilterObjects = this.getActiveFilterIds(nextProps.activeFilters)
 
     //get array of filtered products and set state with updated list
-    let filteredProducts = this.updateProductList(null, nextProps.activeFilters)
+    let filteredProducts = this.updateProductList(null, nextProps.activeFilters)    
 
-    //send product count to parent before setting state
-    this.props.sendProductCount(filteredProducts.length)
+    this.props.setProductCount(filteredProducts.length)
 
     //set state with new list of products
     this.setState({

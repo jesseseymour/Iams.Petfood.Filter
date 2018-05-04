@@ -4,7 +4,7 @@ module.exports = {
     entry: ["core-js/fn/promise", "core-js/fn/array/includes", "./src/index.js"],
     output: {
         path: "dist/assets",
-        filename: "bundle.min.js",
+        filename: "productfilter.min.js",
         publicPath: "/assets/"
     },
     plugins: [

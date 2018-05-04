@@ -8,23 +8,6 @@ class App extends Component {
   
   constructor(props) {
     super(props)
-    this.setProductCount = this.setProductCount.bind(this)
-    this.state = {
-      productCount: 0
-    }
-    //this.setProductCount(0)
-  }
-
-  // shouldComponentUpdate(nextProps, nextState){
-  //   //if (nextState === this.state) return false
-  //   return true
-  // }
-  setProductCount(productCount){
-    if (productCount !== this.state.productCount){
-      this.setState({
-        productCount: productCount
-      })
-    }
   }
 
   render() {
@@ -33,12 +16,9 @@ class App extends Component {
       <Router>
       <div className="IamsProductFilter">
         <ProductFilters 
-          rootData={rootData}
-          productCount={this.state.productCount} />
+          rootData={rootData} />
         <ProductList 
-          rootData={rootData}
-          sendProductCount={this.setProductCount}
-          />
+          rootData={rootData} />
         </div>
       </Router>
     )

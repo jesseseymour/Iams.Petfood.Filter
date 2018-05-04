@@ -20,20 +20,20 @@ class ProductFilter extends Component {
   }
 
   render() {
-    const { images, subtext, id, name, active, parent, children, toggleFilter, dataStr, urlname, childrenClass, activeFilters, numChildren } = this.props
+    const { catOrDog, images, subtext, id, name, active, parent, children, toggleFilter, dataStr, urlname, childrenClass, activeFilters, numChildren } = this.props
     if (children){
       return (
         <Panel eventKey={name}>
             <Panel.Heading>
               <Panel.Title toggle>
-                <span>{name}</span>
-                <span className="count">
+                <span className={catOrDog}>{name}</span>
+                <span className={`count ${catOrDog}`}>
                   {activeFilters.length ? ` (${activeFilters.length})` : null}
                 </span>
               </Panel.Title>
             </Panel.Heading>
             <Panel.Collapse onExited={() => this.exited()} onEnter={() => this.enter()}> 
-              <Panel.Body className={`children-${numChildren.toString()}`}>{children}</Panel.Body>
+              <Panel.Body className={`children-${numChildren.toString()} ${catOrDog}`}>{children}</Panel.Body>
             </Panel.Collapse>
           </Panel>
       )
@@ -41,7 +41,7 @@ class ProductFilter extends Component {
     else 
     {
       return (
-        <div className="product-filter-item"
+        <div className={`product-filter-item ${catOrDog}`}
           key={ Date.now() }
           id={ id }
           data-active={active}
