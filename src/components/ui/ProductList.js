@@ -193,7 +193,7 @@ class ProductList extends Component {
                       onPageChange={this.handlePageClick}
                       forcePage={this.state.currentPage} /> */}
         {
-          this.state.loading ? (<i className="loading animate-spin icon-spin5"></i>) : null
+          this.state.loading ? (<div className="loading-container"><i className="glyphicon glyphicon-repeat normal-right-spinner"></i></div>) : null
         }
         {
           (slicedProducts.length && !this.state.loading) ?
