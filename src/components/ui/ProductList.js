@@ -60,6 +60,7 @@ class ProductList extends Component {
     return (nextState !== this.state || nextProps !== this.props) 
   }
 
+
   componentWillReceiveProps(nextProps) {
     //update local array of active filter IDs
     this.activeFilterObjects = this.getActiveFilterIds(nextProps.activeFilters)
@@ -77,6 +78,10 @@ class ProductList extends Component {
     })
 
     
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.updateInlineRatingsAndPriceSpider()
   }
 
   //return array of active filter ids
@@ -156,6 +161,21 @@ class ProductList extends Component {
     })
   }
 
+  updateInlineRatingsAndPriceSpider = () => {
+    let idArr = this.state.filteredProducts.map(product => product.BazaarvoiceId)
+    
+    if (idArr.length && typeof $BV !== 'undefined') {
+      $BV.ui('rr', 'inline_ratings', {
+        productIds: idArr,
+        containerPrefix: 'BVRRInlineRating'
+      });
+    }
+
+    if (typeof PriceSpider !== 'undefined' && typeof PriceSpider.rebind === 'function' && $('.ps-widget').length > 0){
+      PriceSpider.rebind()
+    }
+  }
+
   render() {
     const { filteredProducts } = this.state
     const slicedProducts = this.getSlicedProductList(filteredProducts,this.state.offset)
@@ -183,7 +203,7 @@ class ProductList extends Component {
                         name={product.Title}
                         formula={product.Formula}
                         thumbnail={product.Image.ThumbnailUrl}
-                        link={this.props.rootData.baseUrl + "/" + product.FullUrl}
+                        link={product.FullUrl}
                         bvID={product.BazaarvoiceId}
                         psID={product.PriceSpiderId} />
 
