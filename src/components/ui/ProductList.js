@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import Product from './Product'
 import fetch from 'isomorphic-fetch'
-import ReactPaginate from 'react-paginate'
+//import ReactPaginate from 'react-paginate'
 
 class ProductList extends Component {
   constructor(props) {
@@ -151,7 +151,7 @@ class ProductList extends Component {
   }
 
   //pagination link click
-  handlePageClick = (data) => { 
+  /* handlePageClick = (data) => { 
     let selected = data.selected
     let offset = Math.ceil(selected * this.props.perPage)
     
@@ -159,7 +159,7 @@ class ProductList extends Component {
       offset: offset,
       currentPage: Math.floor(offset / this.props.perPage)
     })
-  }
+  } */
 
   updateInlineRatingsAndPriceSpider = () => {
     let idArr = this.state.filteredProducts.map(product => product.BazaarvoiceId)

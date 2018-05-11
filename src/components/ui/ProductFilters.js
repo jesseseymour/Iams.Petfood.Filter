@@ -3,6 +3,7 @@ import fetch from 'isomorphic-fetch'
 import { withRouter } from 'react-router-dom'
 import ProductFilter from './ProductFilter'
 import { PanelGroup, Panel, Button } from 'react-bootstrap'
+import Icons from '../../svg/sprite.svg'
 
 
 class ProductFilters extends Component {
@@ -32,6 +33,14 @@ class ProductFilters extends Component {
   componentWillReceiveProps(nextProps){
     if(this.props.activeFilters !== nextProps.activeFilters) this.updateQuery(nextProps.activeFilters)
   }
+
+  // shouldComponentUpdate(nextProps, nextState){
+  //   if(nextProps !== this.props && nextState !== this.state){
+  //     return true
+  //   }else{
+  //     return false
+  //   }
+  // }
 
   checkURLForFilters() { //check url path or hash for any preset filters
     //example query string: ?protein=beef~chicken&type=dry
@@ -129,6 +138,8 @@ class ProductFilters extends Component {
                             activeFilters={this.props.activeFilters}
                             images={[node.ImageActive.ThumbnailUrl,node.ImageInactive.ThumbnailUrl]}
                             catOrDog={this.props.rootData.department.urlName}
+                            loaded={this.state.loaded}
+                            svg={Icons}
                             //dataStr={parent ? "data-toggle='collapse' data-target=`${node.UrlName}-children`" : null}
                             >
                               { node.Children.length ? this.listFilters ({array:node.Children, depth:depth+1, parent:node.Id }) : null }
@@ -155,6 +166,7 @@ class ProductFilters extends Component {
   }
   
   render() {
+    const noFilters = this.props.activeFilters.length === 0 ? " nofilters" : "";
     return (
       <div className="filters">
         <Panel id="FilterContainer" expanded={this.state.open}>
@@ -164,7 +176,7 @@ class ProductFilters extends Component {
                 <div className="close" onClick={() => this.setState({ open: false })}>&#x2715;</div>
                 <div className="filters-list">{this.props.rootData.labels.filter}: {this.renderActiveFilters(this.props.activeFilters)}</div>
                 <PanelGroup accordion className="filter-list" id="filterPanelGroup">
-                  <div className="product-filter-item hidden-xs hidden-sm" onClick={this.props.clearFilters}><span className={this.props.rootData.department.urlName}>{this.props.rootData.labels.allproducts}</span></div>
+                  <div className="product-filter-item hidden-xs hidden-sm" onClick={this.props.clearFilters}><span className={this.props.rootData.department.urlName + noFilters}>{this.props.rootData.labels.allproducts}</span></div>
                     {this.listFilters()}
                   </PanelGroup>
                   <div className="bottom">
