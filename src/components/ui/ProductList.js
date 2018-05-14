@@ -180,6 +180,7 @@ class ProductList extends Component {
     const { filteredProducts } = this.state
     const slicedProducts = this.getSlicedProductList(filteredProducts,this.state.offset)
     const loading = this.state.loading ? (<div className="loading">{this.props.rootData.labels.loadingproducts}...</div>) : null
+    const noProducts = !this.state.loading && filteredProducts.length === 0 ? <div className="no-products">Sorry, there are no products matching your selections. <span onClick={this.props.clearFilters}>Reset filters</span></div> : null
     return (
     
       <div className="product-list">
@@ -209,7 +210,7 @@ class ProductList extends Component {
 
             )
           :
-            null
+            noProducts
         }
       </div>
     )

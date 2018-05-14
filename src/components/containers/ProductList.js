@@ -1,5 +1,5 @@
 import ProductList from '../ui/ProductList'
-import { setProductCount } from '../../actions'
+import { setProductCount, clearFilters } from '../../actions'
 import { connect } from 'react-redux'
 
 const mapStateToProps = (state) => {
@@ -14,6 +14,11 @@ const mapDispatchToProps = dispatch => { //attach dispatch actions to ProductLis
     setProductCount(count) {
       dispatch(
         setProductCount(count)
+      )
+    },
+    clearFilters() {
+      dispatch(
+        clearFilters()
       )
     }
   }
