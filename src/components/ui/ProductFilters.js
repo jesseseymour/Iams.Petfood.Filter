@@ -139,7 +139,6 @@ class ProductFilters extends Component {
                             images={[node.ImageActive.ThumbnailUrl,node.ImageInactive.ThumbnailUrl]}
                             catOrDog={this.props.rootData.department.urlName}
                             loaded={this.state.loaded}
-                            svg={Icons}
                             //dataStr={parent ? "data-toggle='collapse' data-target=`${node.UrlName}-children`" : null}
                             >
                               { node.Children.length ? this.listFilters ({array:node.Children, depth:depth+1, parent:node.Id }) : null }
@@ -197,6 +196,7 @@ class ProductFilters extends Component {
           <span className={`clear-filters hidden-lg hidden-md ${this.props.rootData.department.urlName}`} onClick={this.props.clearFilters}>{this.props.activeFilters.length ? (this.props.rootData.labels.clearfilters + " (" + this.props.activeFilters.length) + ")" : null}</span>
           <span className={`clear-filters hidden-sm hidden-xs ${this.props.rootData.department.urlName}`} onClick={this.props.clearFilters}>{this.props.activeFilters.length ? "Reset Filters" : null}</span>
         </div>
+        <div style={{display:'none'}} dangerouslySetInnerHTML={{__html: Icons}}></div>
       </div>
     )
   }
