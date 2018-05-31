@@ -20,6 +20,7 @@ class ProductFilters extends Component {
     fetch('/api/Products/Filters?department=' + this.props.rootData.department.urlName,
     {
       method: 'GET',
+      credentials: 'include',
       headers: {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
