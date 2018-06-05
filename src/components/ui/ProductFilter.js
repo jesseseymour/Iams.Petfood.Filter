@@ -5,13 +5,13 @@ class ProductFilter extends Component {
   constructor(props) {
     super(props)
     this.el = document.getElementById("filterPanelGroup")
-    this.state = {
-      componentLoaded: false
-    }
   }
- 
-  componentDidMount(){
-    this.setState({componentLoaded:true})
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.parent && (nextProps.active === this.props.active)) {
+      return false
+    }
+    return true
   }
 
   exited(){
@@ -20,6 +20,7 @@ class ProductFilter extends Component {
     const open = tree.filter(child => Array.from(child.lastChild.classList).some(v => classes.includes(v)))
 
     open.length ? this.el.classList.add("open") : this.el.classList.remove("open")
+    
   }
 
   enter(){
@@ -34,18 +35,18 @@ class ProductFilter extends Component {
     if (children){
       return (
         <Panel eventKey={name}>
-            <Panel.Heading>
-              <Panel.Title toggle>
-                <span className={catOrDog}>{name}</span>
-                <span className={`count ${catOrDog}`}>
-                  {activeFilters.length ? ` (${activeFilters.length})` : null}
-                </span>
-              </Panel.Title>
-            </Panel.Heading>
-            <Panel.Collapse onExited={() => this.exited()} onEnter={() => this.enter()}> 
-              <Panel.Body className={`children-${numChildren.toString()} ${catOrDog}`}>{children}</Panel.Body>
-            </Panel.Collapse>
-          </Panel>
+          <Panel.Heading>
+            <Panel.Title toggle>
+              <span className={catOrDog}>{name}</span>
+              <span className={`count ${catOrDog}`}>
+                {activeFilters.length ? ` (${activeFilters.length})` : null}
+              </span>
+            </Panel.Title>
+          </Panel.Heading>
+          <Panel.Collapse onExited={() => this.exited()} onEnter={() => this.enter()} > 
+            <Panel.Body className={`children-${numChildren.toString()} ${catOrDog}`}>{children}</Panel.Body>
+          </Panel.Collapse>
+        </Panel>
       )
     }
     else 

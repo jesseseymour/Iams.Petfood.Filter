@@ -35,13 +35,13 @@ class ProductFilters extends Component {
     if(this.props.activeFilters !== nextProps.activeFilters) this.updateQuery(nextProps.activeFilters)
   }
 
-  // shouldComponentUpdate(nextProps, nextState){
-  //   if(nextProps !== this.props && nextState !== this.state){
-  //     return true
-  //   }else{
-  //     return false
-  //   }
-  // }
+  shouldComponentUpdate(nextProps, nextState){
+    if(nextProps.activeFilters === this.props.activeFilters){
+      return false
+    }
+
+    return true
+  }
 
   checkURLForFilters() { //check url path or hash for any preset filters
     //example query string: ?protein=beef~chicken&type=dry

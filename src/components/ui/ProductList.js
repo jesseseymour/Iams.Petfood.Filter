@@ -179,7 +179,7 @@ class ProductList extends Component {
 
   render() {
     const { filteredProducts } = this.state
-    const slicedProducts = this.getSlicedProductList(filteredProducts,this.state.offset)
+    //const slicedProducts = this.getSlicedProductList(filteredProducts,this.state.offset)
     const loading = this.state.loading ? (<div className="loading">{this.props.rootData.labels.loadingproducts}...</div>) : null
     const noProducts = !this.state.loading && filteredProducts.length === 0 ? <div className="no-products">Sorry, there are no products matching your selections. <span onClick={this.props.clearFilters}>Reset filters</span></div> : null
     return (
@@ -198,10 +198,10 @@ class ProductList extends Component {
           this.state.loading ? (<div className="loading-container"><i className="glyphicon glyphicon-repeat normal-right-spinner"></i></div>) : null
         }
         {
-          (slicedProducts.length && !this.state.loading) ?
-            slicedProducts.map(
+          (filteredProducts.length && !this.state.loading) ?
+            filteredProducts.map(
               (product, i) => 
-                <Product key={i}
+                <Product key={product.UrlName}
                         name={product.Title}
                         formula={product.Formula}
                         thumbnail={product.Image.ThumbnailUrl}
