@@ -1,7 +1,7 @@
-import { Component } from 'react'
+import { PureComponent } from 'react'
 import { Panel } from 'react-bootstrap'
 
-class ProductFilter extends Component {
+class ProductFilter extends PureComponent {
   constructor(props) {
     super(props)
     this.el = document.getElementById("filterPanelGroup")
