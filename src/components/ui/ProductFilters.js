@@ -36,6 +36,9 @@ class ProductFilters extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState){
+    if(nextState.open !== this.state.open){
+      return true
+    }
     if(nextProps.activeFilters === this.props.activeFilters){
       return false
     }
