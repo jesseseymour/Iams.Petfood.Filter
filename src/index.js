@@ -1,4 +1,3 @@
-import C from './constants'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import storeFactory from './store'
@@ -16,8 +15,6 @@ const store = storeFactory(initialState)
 store.subscribe(saveState)
 
 window.React = React
-
-if(process.env.NODE_ENV !== "production") window.store = store //make store global for dev
 
 let render = () => {
   const App = require("./App").default

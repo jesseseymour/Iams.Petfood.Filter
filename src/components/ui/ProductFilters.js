@@ -3,7 +3,6 @@ import fetch from 'isomorphic-fetch'
 import { withRouter } from 'react-router-dom'
 import ProductFilter from './ProductFilter'
 import { PanelGroup, Panel, Button } from 'react-bootstrap'
-import Icons from '../../svg/sprite.svg'
 
 
 class ProductFilters extends Component {
@@ -200,7 +199,6 @@ class ProductFilters extends Component {
           <span className={`clear-filters hidden-lg hidden-md ${this.props.rootData.department.urlName}`} onClick={this.props.clearFilters}>{this.props.activeFilters.length ? (this.props.rootData.labels.clearfilters + " (" + this.props.activeFilters.length) + ")" : null}</span>
           <span className={`clear-filters hidden-sm hidden-xs ${this.props.rootData.department.urlName}`} onClick={this.props.clearFilters}>{this.props.activeFilters.length ? "Reset Filters" : null}</span>
         </div>
-        <div style={{display:'none'}} id="IconsSvg" dangerouslySetInnerHTML={{__html: Icons}}></div>
       </div>
     )
   }

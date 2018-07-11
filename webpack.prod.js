@@ -10,5 +10,22 @@ module.exports = merge(common, {
                 NODE_ENV: JSON.stringify("production")
             }
         })
-    ]
+    ],
+    module: {
+        loaders: [
+            {
+                test: /\.js$/,
+                exclude: /(node_modules)/,
+                loader: ['babel'],
+                query: {
+                    presets: ['latest', 'stage-0', 'react']
+                }
+            },
+            {
+                test: /\.json$/,
+                exclude: /(node_modules)/,
+                loader: 'json-loader'
+            }
+        ]
+    }
 });
