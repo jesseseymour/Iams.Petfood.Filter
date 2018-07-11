@@ -1,3 +1,3 @@
 #!/bin/bash
-webpack -p --config webpack.prod.js
-cp ./dist/assets/bundle.min.js ../SitefinityWebApp/Content/WildFrontier/dist/js/bundle.min.js
+env NODE_ENV=production webpack -p --config webpack.prod.js
+cp ./dist/productfilter.min.js ../iams/MarsIamsWebApp/App_Data/Sitefinity/WebsiteTemplates/BaseTemplate/js/productfilter.min.js
